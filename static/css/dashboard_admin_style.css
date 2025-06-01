@@ -1,0 +1,289 @@
+body {
+    background: #f3fdf5;
+    margin: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    color: #222;
+  }
+  
+  .navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+    padding: 18px 32px;
+    border-bottom: 1px solid #e7fbe6;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  }
+  
+  .navbar-left {
+    display: flex;
+    align-items: center;
+    gap: 26px;
+  }
+  .brand {
+    color: #1fbe6c;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-right: 22px;
+    letter-spacing: 0.5px;
+  }
+  .nav-link {
+    color: #222;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0 7px;
+    transition: color 0.2s;
+  }
+  .nav-link.active, .nav-link:hover {
+    color: #1fbe6c;
+  }
+  
+  .navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .welcome {
+    color: #222;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+  .logout-btn {
+    background: #f3fdf5;
+    border: 1px solid #d5eedd;
+    border-radius: 7px;
+    padding: 6px 18px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, border 0.2s;
+  }
+  .logout-btn:hover {
+    background: #e7fbe6;
+    border-color: #1fbe6c;
+    color: #1fbe6c;
+  }
+  
+  .main-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 34px 16px 40px 16px;
+  }
+  
+  .dashboard-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 24px;
+  }
+  
+  .summary-cards {
+    display: flex;
+    gap: 22px;
+    margin-bottom: 34px;
+    flex-wrap: wrap;
+  }
+  .summary-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    padding: 20px 40px 18px 24px;
+    min-width: 200px;
+    flex: 1 1 180px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .summary-label {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 7px;
+  }
+  .summary-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #222;
+  }
+  .summary-value.green {
+    color: #1fbe6c;
+  }
+  .summary-value.orange {
+    color: #f2b900;
+  }
+  
+  .lots-row {
+    margin-bottom: 34px;
+  }
+  .lots-overview {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    padding: 26px 22px 22px 22px;
+  }
+  .lots-title {
+    font-size: 1.13rem;
+    font-weight: 600;
+    margin-bottom: 22px;
+  }
+  .lots-flex {
+    display: flex;
+    gap: 36px;
+    flex-wrap: wrap;
+  }
+  .lot {
+    flex: 1 1 340px;
+    min-width: 260px;
+    margin-bottom: 18px;
+  }
+  .lot-title {
+    font-size: 1.08rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .lot-spots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .spot {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 7px;
+    font-size: 1rem;
+    font-weight: 500;
+    background: #e7fbe6;
+    color: #1fbe6c;
+    transition: background 0.2s, color 0.2s;
+  }
+  .spot.red {
+    background: #ffeaea;
+    color: #f26c6c;
+  }
+  .spot.green {
+    background: #e7fbe6;
+    color: #1fbe6c;
+  }
+  .lot-legend {
+    font-size: 0.97rem;
+    color: #888;
+    margin-bottom: 4px;
+    margin-top: 6px;
+  }
+  .legend-dot {
+    display: inline-block;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    vertical-align: middle;
+    margin-right: 5px;
+  }
+  .legend-dot.green {
+    background: #1fbe6c;
+  }
+  .legend-dot.red {
+    background: #f26c6c;
+  }
+  .lot-status {
+    font-size: 0.96rem;
+    color: #666;
+    margin-top: 4px;
+  }
+  
+  .reservations-row {
+    margin-top: 32px;
+  }
+  .reservations-title {
+    font-size: 1.13rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .reservations-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.03);
+  }
+  .reservations-table th, .reservations-table td {
+    padding: 14px 16px;
+    text-align: left;
+    font-size: 1rem;
+  }
+  .reservations-table th {
+    background: #f3fdf5;
+    color: #666;
+    font-weight: 700;
+    border-bottom: 1px solid #e7fbe6;
+  }
+  .reservations-table tr {
+    border-bottom: 1px solid #f1f1f1;
+  }
+  .reservations-table tr:last-child {
+    border-bottom: none;
+  }
+  .reservations-table td {
+    color: #222;
+  }
+  
+  .add_parking_lot_btn {
+    background: linear-gradient(90deg, #1fbe6c 0%, #49e68c 100%);
+    color: #fff;
+    font-weight: 600;
+    font-size: 1.08rem;
+    padding: 12px 28px;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(31,190,108,0.08);
+    cursor: pointer;
+    transition: background 0.18s, box-shadow 0.18s, transform 0.12s;
+    letter-spacing: 0.02em;
+    outline: none;
+    margin-left:1000px;
+    display: inline-block;
+  }
+  .add_parking_lot_btn:hover, .add-parking-btn:focus {
+    background: linear-gradient(90deg, #179957 0%, #1fbe6c 100%);
+    box-shadow: 0 4px 18px rgba(31,190,108,0.18);
+    transform: translateY(-2px) scale(1.03);
+  }
+  
+
+  .lot-container {
+    display: block;
+    width: 100%;
+    margin-bottom: 30px; /* Adds spacing between lots */
+    
+    padding: 10px;
+    border-radius: 6px;
+  }
+  
+
+
+
+  /* Responsive */
+  @media (max-width: 1000px) {
+    .summary-cards {
+      flex-direction: column;
+      gap: 14px;
+    }
+    .lots-flex {
+      flex-direction: column;
+      gap: 20px;
+    }
+  }
+  @media (max-width: 700px) {
+    .main-content {
+      padding: 20px 4px 24px 4px;
+    }
+    .navbar {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 14px 12px;
+    }
+  }
+  

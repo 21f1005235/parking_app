@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Smart Parking Solutions</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../static/css/login_style.css">
+  
+</head>
+<body>
+  <div class="bg">
+    <main class="container">
+      <h1 class="main-title">Smart Parking Solutions</h1>
+      <p class="subtitle">
+        Find, reserve, and manage parking spots with ease. The modern way to handle vehicle parking.
+      </p>
+     
+      <div class="login-card">
+        <h2 class="login-title">Login</h2>
+        <form method="POST">
+          <label class="form-label">Registered Email ID</label>
+          <div class="input-group">
+            <input type="email" name="email" id="email" style= "width:100%; padding:10px; margin-bottom:20px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
+            
+          </div>
+          <label class="form-label">Password</label>
+          <div class="input-group">
+            <input name="password" id="password" type="password" placeholder="Enter your password" required style= "width:100%; padding:10px; margin-bottom:20px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
+            
+          </div>
+          
+          <button type="submit" class="login-btn" >Login</button>
+        </form>
+        <div class="card-footer">
+          Don't have an account? <a href="/register" class="register-link">Create Account</a>
+        </div>
+      </div>
+      <div class="features-illustration-row">
+        <ul class="feature-list">
+          <li><span class="check">&#10003;</span> Instantly find available parking spots</li>
+          <li><span class="check">&#10003;</span> Reserve parking in advance</li>
+          <li><span class="check">&#10003;</span> Manage all your vehicles in one place</li>
+          <li><span class="check">&#10003;</span> View your complete parking history</li>
+        </ul>
+        <div class="parking-graphic">
+          <div class="parking-card-graphic">
+            <span class="parking-icon">P</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-row">
+        <div class="feature-card">
+          <div class="card-icon card-icon-green">⏱️</div>
+          <div class="card-title">Real-time Availability</div>
+          <div class="card-desc">See which spots are available in real-time and book instantly.</div>
+        </div>
+        <div class="feature-card">
+          <div class="card-icon card-icon-yellow">✔️</div>
+          <div class="card-title">Easy Management</div>
+          <div class="card-desc">Manage your reservations, view history and get notifications.</div>
+        </div>
+        <div class="feature-card">
+          <div class="card-icon card-icon-green">🚗</div>
+          <div class="card-title">Multiple Vehicles</div>
+          <div class="card-desc">Register multiple vehicles under one account for easy access.</div>
+        </div>
+      </div>
+    </main>
+  </div>
+  {% if success == False %}
+          <script>
+             alert("Enter correct password");
+            window.location.href = "{{ url_for('main.login') }}";
+          </script>
+        
+  {% endif %}
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

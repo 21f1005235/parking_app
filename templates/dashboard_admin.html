@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vehicle Parking System - Admin Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../static/css/dashboard_admin_style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-left">
+      <span class="brand">Vehicle Parking System</span>
+      <a href="#" class="nav-link active">Home</a>
+      <a href="{{ url_for('main.users') }}" class="nav-link">Users</a>
+      <a href="#" class="nav-link">Search</a>
+      <a href="#" class="nav-link">Summary</a>
+    </div>
+    <div class="navbar-right">
+      <span class="welcome">Welcome, {{name}}</span>
+      <a href="{{ url_for('main.logout') }}" class="logout-btn">Logout</a>
+
+    </div>
+  </nav>
+  <main class="main-content">
+    <h2 class="dashboard-title">Admin Dashboard</h2>
+    <div class="summary-cards">
+      <div class="summary-card">
+        <div class="summary-label">Total Parking Spots</div>
+        <div class="summary-value green">{{ summary["total_parking_spots"] }}</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">Available Spots</div>
+        <div class="summary-value">{{  summary["available_spots"] }}</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">Occupied Spots</div>
+        <div class="summary-value orange">{{ summary["occupied_spots"] }}</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">Total Revenue</div>
+        <div class="summary-value green">{{ summary["total_revenue"] }}</div>
+      </div>
+    </div>
+    <div class="lots-row">
+      <div class="lots-overview">
+        <div class="lots-title">Parking Lots Overview</div>
+        <div class="lots-flex">
+          <div class="lot">
+
+        {% if parking_data %}
+          {% for lot in parking_data %}
+            <div class="lot-container">
+                  <a href="">Edit</a>
+                  <a href="">Delete</a>
+                  <div class="lot-title">{{ lot }}</div>
+                  {% if parking_data[lot] %}
+                    <div class="lot-spots">
+                      {% for x in parking_data[lot]['spot_ids'] %}
+                        
+                        {% if x in parking_data[lot]["occupied_spots"] %}
+                          <div class="spot red"><a href="/{{ lot }}/{{ x }}" style="text-decoration: none;">P{{ x }}</a></div>
+
+                        
+                        {% else %}
+                          <div class="spot green"><a href="/{{ lot }}/{{ x }}" style="text-decoration: none;">P{{ x }}</a></div>
+                        
+                        {% endif %}
+                      
+                      {% endfor %}
+                    </div>
+                    
+                    <div class="lot-legend">
+                      <span class="legend-dot green"></span> Available
+                      <span class="legend-dot red" style="margin-left:18px;"></span> Occupied
+                    </div>
+                    
+                    <div class="lot-status">
+                      {{ parking_data[lot]["occupied_count"] }}/{{ parking_data[lot]["total_count"] }} spots occupied
+                    </div>
+                  {% endif %}    
+            </div>
+            
+
+              
+          {% endfor %}
+        {% else %}
+          <div> <p> No parking data found</p></div>
+        {% endif %}  
+        </div>
+      </div>
+    </div>
+    <br>
+    <div>
+      <button class="add_parking_lot_btn" onclick="window.location.href='{{url_for('main.addnewlot')}}'">Add Parking Lot</button>
+    </div>
+    <div class="reservations-row">
+      <div class="reservations-title">Active Reservations</div>
+      <table class="reservations-table">
+        <thead>
+          <tr>
+            <th>USER</th>
+            <th>SPOT</th>
+            <th>VEHICLE</th>
+            <th>START TIME</th>
+            <th>DURATION</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Regular User</td>
+            <td>P2</td>
+            <td>ABC-1234</td>
+            <td>09:37:06</td>
+            <td>61 min</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</body>
+</html>

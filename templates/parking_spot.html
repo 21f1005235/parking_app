@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add New Parking Lot</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../static/css/parking_spots_style.css">
+</head>
+<body>
+  <div class="modal-bg">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title"> Parking Spot</div>
+          <div class="modal-subtitle">Check the status of an existing parking spot</div>
+        </div> <a href="{{url_for('main.admin_dashboard')}}" class="modal-close" aria-label="Close">&times;</a>
+        
+      </div>
+      <div class="modal-tabs">
+        <button class="tab active">Details</button>
+        
+      </div>
+
+      <div class="model-form">
+      <form class="modal-form" action="{{ url_for('main.edit_parking_spot', parking_lot_name=parking_lot_name, parking_spot_id=parking_spot_id) }}" method="POST">
+
+        <div class="form-group">
+          <label for="lot_name">Parking Lot Name: {{ parking_lot_name }}</label>
+         
+        </div>
+
+        <div class="form-group">
+          <label for="location">Parking Spot ID : {{ parking_spot_id}}</label>
+          
+        </div>
+        <div class="form-group">
+          <label for="location">Parking Lot Price: ${{ parking_lot_price}}/hour</label>
+          
+        </div>
+        <div class="form-row">
+          <div class="form-group half">
+            
+            {% if availability == "Yes" %}
+            <label for="spots">Current Status:</label>
+            <button type="submit" class="btn green" name="status">Available</button>
+            {% else %}
+            <label for="spots">Current Status:</label>
+            <button type="submit" class="btn red" name="status">Occupied</button>
+            {% endif %}
+
+
+          </div>
+          
+        </div>
+        
+        <div class="modal-actions">
+          <a href="{{url_for('main.admin_dashboard')}}" class='btn cancel'> Close </a>
+          <button type="submit" class="btn primary" name="delete">Delete</button>
+        </div>
+      </form>
+      </div>
+    </div>
+  </div>
+  {% if success == False %}
+ 
+  <script>
+    alert("Parking spot already in use. Cannot be deleted.");
+    
+  </script>
+  {% endif %}
+</body>
+</html>

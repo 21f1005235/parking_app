@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vehicle Parking System - Admin Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../static/css/dashboard_style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-left">
+      <span class="brand">Vehicle Parking System</span>
+      <a href="#" class="nav-link active">Home</a>
+      <a href="#" class="nav-link">Parking Lots</a>
+      <a href="#" class="nav-link">Users</a>
+      <a href="#" class="nav-link">Statistics</a>
+    </div>
+    <div class="navbar-right">
+      <span class="welcome">Welcome, Vinay S R</span>
+      <button class="logout-btn">Logout</button>
+    </div>
+  </nav>
+  <main class="main-content">
+    <h2 class="dashboard-title">Admin Dashboard</h2>
+    <div class="summary-cards">
+      <div class="summary-card">
+        <div class="summary-label">Total Parking Spots</div>
+        <div class="summary-value green">35</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">Available Spots</div>
+        <div class="summary-value">25</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">Occupied Spots</div>
+        <div class="summary-value orange">10</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">Total Revenue</div>
+        <div class="summary-value green">$4.00</div>
+      </div>
+    </div>
+    <div class="lots-row">
+      <div class="lots-overview">
+        <div class="lots-title">Parking Lots Overview</div>
+        <div class="lots-flex">
+          <div class="lot">
+            <div class="lot-title">Parking1</div>
+            <div class="lot-spots">
+              <div class="spot green">P1</div>
+              <div class="spot green">P2</div>
+              <div class="spot green">P3</div>
+              <div class="spot green">P4</div>
+              <div class="spot green">P5</div>
+              <div class="spot red">P6</div>
+              <div class="spot red">P7</div>
+              <div class="spot red">P8</div>
+              <div class="spot red">P9</div>
+              <div class="spot red">P10</div>
+              <div class="spot green">P11</div>
+              <div class="spot green">P12</div>
+              <div class="spot green">P13</div>
+              <div class="spot green">P14</div>
+              <div class="spot green">P15</div>
+            </div>
+            <div class="lot-legend">
+              <span class="legend-dot green"></span> Available
+              <span class="legend-dot red" style="margin-left:18px;"></span> Occupied
+            </div>
+            <div class="lot-status">10/15 spots available</div>
+          </div>
+          <div class="lot">
+            <div class="lot-title">Parking2</div>
+            <div class="lot-spots">
+              <div class="spot green">P1</div>
+              <div class="spot green">P2</div>
+              <div class="spot green">P3</div>
+              <div class="spot green">P4</div>
+              <div class="spot green">P5</div>
+              <div class="spot green">P6</div>
+              <div class="spot green">P7</div>
+              <div class="spot green">P8</div>
+              <div class="spot green">P9</div>
+              <div class="spot green">P10</div>
+              <div class="spot green">P11</div>
+              <div class="spot green">P12</div>
+              <div class="spot green">P13</div>
+              <div class="spot green">P14</div>
+              <div class="spot green">P15</div>
+              <div class="spot green">P16</div>
+              <div class="spot green">P17</div>
+              <div class="spot green">P18</div>
+              <div class="spot green">P19</div>
+              <div class="spot red">P20</div>
+            </div>
+            <div class="lot-legend">
+              <span class="legend-dot green"></span> Available
+              <span class="legend-dot red" style="margin-left:18px;"></span> Occupied
+            </div>
+            <div class="lot-status">16/20 spots available</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="reservations-row">
+      <div class="reservations-title">Active Reservations</div>
+      <table class="reservations-table">
+        <thead>
+          <tr>
+            <th>USER</th>
+            <th>SPOT</th>
+            <th>VEHICLE</th>
+            <th>START TIME</th>
+            <th>DURATION</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Regular User</td>
+            <td>P2</td>
+            <td>ABC-1234</td>
+            <td>09:37:06</td>
+            <td>61 min</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</body>
+</html>

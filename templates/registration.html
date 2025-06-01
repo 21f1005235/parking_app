@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register - Smart Parking Solutions</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../static/css/registration_style.css">
+</head>
+<body>
+  <div class="bg">
+    <main class="container">
+      <h1 class="main-title">Smart Parking Solutions</h1>
+      <p class="subtitle">
+        Find, reserve, and manage parking spots with ease. The modern way to handle vehicle parking.
+      </p>
+      <div class="tabs-row">
+        <button class="tab-btn active">Create Account</button>
+      </div>
+      <div class="register-card">
+        <h2 class="register-title">Create Account</h2>
+        <form action="/register" method="post">
+          <label class="form-label">Full Name</label>
+          <div class="input-group">
+            <input type="text" name="fullname" placeholder="Enter your full name" required>
+          </div>
+          <label class="form-label">Email</label>
+          <div class="input-group">
+            <input type="email" name="email" placeholder="Enter your email" required>
+          </div>
+          <label class="form-label">Password</label>
+          <div class="input-group">
+            <input type="password" name="password" placeholder="Create a password" required>
+          </div>
+          <label class="form-label">Address</label>
+          <div class="input-group">
+            <input type="text" name="address" placeholder="Enter your address" required>
+          </div>
+          <label class="form-label">Pin Code</label>
+          <div class="input-group">
+            <input type="number" name="pincode" placeholder="PinCode" required>
+          </div>
+          <label class="form-label">Vehicle Number</label>
+          <div class="input-group">
+            <input type="text" name="vehiclenumber" placeholder="Enter your vehicle number">
+          </div>
+          <div>
+           
+        </form>
+        <button type="submit" class="tab-btn" >Submit</button>
+        <div class="card-footer">
+          Already have an account? <a href="/login">Log In</a>
+        </div>
+      </div>
+      <div class="features-illustration-row">
+        <ul class="feature-list">
+          <li><span class="check">&#10003;</span> Instantly find available parking spots</li>
+          <li><span class="check">&#10003;</span> Reserve parking in advance</li>
+          <li><span class="check">&#10003;</span> Manage all your vehicles in one place</li>
+          <li><span class="check">&#10003;</span> View your complete parking history</li>
+        </ul>
+        <div class="parking-graphic">
+          <div class="parking-card-graphic">
+            <span class="parking-icon">P</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-row">
+        <div class="feature-card">
+          <div class="card-icon card-icon-green">⏱️</div>
+          <div class="card-title">Real-time Availability</div>
+          <div class="card-desc">See which spots are available in real-time and book instantly.</div>
+        </div>
+        <div class="feature-card">
+          <div class="card-icon card-icon-yellow">✔️</div>
+          <div class="card-title">Easy Management</div>
+          <div class="card-desc">Manage your reservations, view history and get notifications.</div>
+        </div>
+        <div class="feature-card">
+          <div class="card-icon card-icon-green">🚗</div>
+          <div class="card-title">Multiple Vehicles</div>
+          <div class="card-desc">Register multiple vehicles under one account for easy access.</div>
+        </div>
+      </div>
+    </main>
+  </div>
+  {% if success == True %}
+  <script>
+     alert("Email registered successfully!");
+     window.location.href = "{{ url_for('main.login') }}";
+  </script>
+  {% elif success == False %}
+  <script>
+    alert("Email already in use. Please try again.");
+    window.location.href = "{{ url_for('main.register') }}"
+  </script>
+  {% endif %}
+</body>
+</html>

@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vehicle Parking System - Manage Users</title>
+  <link rel="stylesheet" href="../static/css/users_style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-left">
+          <span class="brand">Vehicle Parking System</span>
+          <a href="{{ url_for('main.admin_dashboard') }}" class="nav-link">Home</a>
+          <a href="{{ url_for('main.users') }}" class="nav-link active">Users</a>
+          <a href="#" class="nav-link">Search</a>
+          <a href="#" class="nav-link">Summary</a>
+        </div>
+        <div class="navbar-right">
+          <span class="welcome">Welcome, {{name}}</span>
+          <a href="{{ url_for('main.logout') }}" class="logout-btn">Logout</a>
+    
+        </div>
+      </nav>
+  <main>
+    <section class="manage-users-section">
+      <h2>Manage Users</h2>
+      <div class="search-container">
+        <input type="text" placeholder="Search users..." class="search-input">
+      </div>
+      <div class="users-table-container">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Address</th>
+              <th>PinCode</th>
+              <th>Vehicle Number</th>
+              
+            </tr>
+          </thead>
+          <tbody>
+            {% if users %}
+                    {% for user in users.values() %}
+                    <tr>
+                
+                        <td>{{ user['name']}} </td>
+                        <td>{{ user['email'] }} </td>
+                        
+                        {% if user['is_admin']=="user" %}
+                            <td><span class="badge badge-user">user</span></td>
+
+                        {% else %}
+                            <td><span class="badge badge-active">admin</span></td>
+                        {% endif %}
+
+                        <td>{{ user["address"] }}</td>
+                        <td>{{ user["pincode"] }}</td>
+
+                        {% if user["vehicle_number"] %}
+                        <td>{{ user["vehicle_number"] }}</td>
+                        {% endif %}
+             
+                    </tr>
+                    {% endfor %}
+            {% endif %} 
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,242 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f6fcf7;
+    color: #222;
+  }
+  
+  .navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+    padding: 18px 32px;
+    border-bottom: 1px solid #e7fbe6;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  }
+  
+  .navbar-left {
+    display: flex;
+    align-items: center;
+    gap: 26px;
+  }
+  .brand {
+    color: #1fbe6c;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-right: 22px;
+    letter-spacing: 0.5px;
+  }
+  .nav-link {
+    color: #222;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0 7px;
+    transition: color 0.2s;
+  }
+  .nav-link.active, .nav-link:hover {
+    color: #1fbe6c;
+  }
+  
+  .navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .logout-btn {
+    background: #f2f2f2;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 18px;
+    font-weight: 500;
+    color: #444;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 1em;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  }
+  
+  .logout-btn:hover {
+    background: #e8e8e8;
+  }
+  
+  main {
+    padding: 32px 0 0 0;
+    min-height: 100vh;
+  }
+  
+  .manage-users-section {
+    width: 90%;
+    max-width: 1100px;
+    margin: 0 auto;
+    background: #eefdff0c;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(9, 199, 127, 0.06);
+    padding: 32px 32px 40px 32px;
+  }
+  
+  .manage-users-section h2 {
+    margin-top: 0;
+    color: #263238;
+    font-size: 1.5em;
+    font-weight: bold;
+  }
+  
+  .search-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 18px;
+  }
+  
+  .search-input {
+    padding: 10px 16px;
+    border: 1.5px solid #cdeede;
+    border-radius: 8px;
+    font-size: 1em;
+    width: 240px;
+    background: #f8fffb;
+    transition: border 0.2s;
+  }
+  
+  .search-input:focus {
+    border: 1.5px solid #09c77f;
+    outline: none;
+    background: #fff;
+  }
+  
+  .users-table-container {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(9, 199, 127, 0.03);
+    padding: 0;
+    overflow-x: auto;
+  }
+  
+  .users-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 1em;
+  }
+  
+  .users-table th, .users-table td {
+    padding: 14px 14px;
+    text-align: left;
+  }
+  
+  .users-table th {
+    background: #f6fcf7;
+    color: #263238;
+    font-weight: 600;
+    border-bottom: 2px solid #e0f2e9;
+  }
+  
+  .users-table tbody tr {
+    border-bottom: 1px solid #e0f2e9;
+    transition: background 0.15s;
+  }
+  
+  .users-table tbody tr:hover {
+    background: #f3fef8;
+  }
+  
+  .badge {
+    display: inline-block;
+    padding: 3px 14px;
+    border-radius: 12px;
+    font-size: 0.96em;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    text-transform: lowercase;
+  }
+  
+  .badge-user {
+    background: #e6f7f1;
+    color: #09c77f;
+  }
+  
+  .badge-admin {
+    background: #fff3d6;
+    color: #ffb300;
+  }
+  
+  .badge-active {
+    background: #e6f7f1;
+    color: #09c77f;
+  }
+  
+  .badge-suspended {
+    background: #ffeaea;
+    color: #ff5a5a;
+  }
+  
+  .btn {
+    border: 2px solid transparent;
+    border-radius: 8px;
+    padding: 6px 18px;
+    font-size: 1em;
+    font-weight: 500;
+    margin-right: 6px;
+    cursor: pointer;
+    transition: background 0.17s, border 0.17s, color 0.17s;
+  }
+  
+  .btn-view {
+    background: #f8fffb;
+    color: #09c77f;
+    border: 2px solid #09c77f;
+  }
+  
+  .btn-view:hover {
+    background: #09c77f;
+    color: #fff;
+  }
+  
+  .btn-suspend {
+    background: #fff;
+    color: #ff5a5a;
+    border: 2px solid #ff5a5a;
+  }
+  
+  .btn-suspend:hover {
+    background: #ff5a5a;
+    color: #fff;
+  }
+  
+  .btn-activate {
+    background: #fff;
+    color: #09c77f;
+    border: 2px solid #09c77f;
+  }
+  
+  .btn-activate:hover {
+    background: #09c77f;
+    color: #fff;
+  }
+  
+  @media (max-width: 900px) {
+    .manage-users-section {
+      padding: 18px 4vw 24px 4vw;
+    }
+    .users-table th, .users-table td {
+      padding: 10px 8px;
+      font-size: 0.95em;
+    }
+  }
+  @media (max-width: 600px) {
+    .navbar, .nav-user, .nav-links {
+      flex-direction: column;
+      gap: 8px;
+      align-items: flex-start;
+    }
+    .manage-users-section {
+      width: 98vw;
+      padding: 10px 2vw 16px 2vw;
+    }
+    .search-input {
+      width: 100%;
+      min-width: 0;
+    }
+  }
+  
