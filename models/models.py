@@ -32,3 +32,34 @@ class Parking_spot(db.Model):
     lot_id = db.Column(db.Integer, db.ForeignKey('parking_lot.lot_id', ondelete="CASCADE"), nullable=False)
     spot_number = db.Column(db.Integer, nullable=False)
     is_available = db.Column(db.String, default="Yes",nullable=False)
+
+class Booking(db.Model):
+    __tablename__ = 'bookings'
+
+    booking_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    spot_id = db.Column(db.Integer, db.ForeignKey('parking_spot.id'), nullable=False)
+    lot_id = db.Column(db.Integer, db.ForeignKey('parking_lot.lot_id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    vehicle_number = db.Column(db.String(20),  db.ForeignKey('user.vehicle_number'), nullable=False)
+    start_time = db.Column(db.Integer, default=datetime.utcnow)
+    end_time = db.Column(db.DateTime)
+
+    # Relationships (optional, for convenience)
+    spot = db.relationship('Parking_spot', backref='bookings')
+    lot = db.relationship('Parking_lot', backref='bookings')
+    user = db.relationship('User', backref='bookings')
+
+
+class ReleaseHistory(db.Model):
+    __tablename__ = 'release_history'
+
+    release_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    spot_id = db.Column(db.Integer, db.ForeignKey('parking_spot.id'), nullable=False)
+    vehicle_number = db.Column(db.String(20),  db.ForeignKey('user.vehicle_number'), nullable=False)
+    lot_id = db.Column(db.Integer, db.ForeignKey('parking_lot.lot_id'), nullable=False)
+    released_by_user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    release_time = db.Column(db.Integer, default=datetime.utcnow)
+
+    # Relationships (optional)
+    spot = db.relationship('Parking_spot', backref='release_history')
+    user = db.relationship('User', backref='released_spots')
