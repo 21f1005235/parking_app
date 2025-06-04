@@ -53,7 +53,7 @@ def login():
         print(email)
         print(password)
         rec=User.query.filter(User.email==email).first()  # to match the actual column name
-
+        print(rec.id)
         if rec and rec.password == password:
             login_user(rec)
             if rec.is_admin == "Yes":
@@ -65,6 +65,27 @@ def login():
 
 
 
+@main.route("/dashboard/user/<id>",methods=['GET','POST'])
+@role_required('user')
+def user_dashboard(id):
+    if request.method=="GET":
+        user=User.query.filter(User.id==id).first()
+        
+         
+         
+        
+
+        user_data={
+                                "name": user.full_name,
+                                "address": user.address,
+                                "email": user.email,
+                                "pincode": user.pincode,
+                                "vehicle_number": user.vehicle_number
+
+
+                }
+
+        return render_template('dashboard_user.html',user_data=user_data)
 
 @main.route('/logout')
 @login_required
@@ -227,13 +248,6 @@ def addnewlot():
         return redirect(url_for("main.login"))
 
 
-@main.route("/dashboard/user/<id>",methods=['GET','POST'])
-@role_required('user')
-def dashboard(id):
-    if request.method=="GET":
-         rec=User.query.filter(User.id==id).first()
-         name=rec.full_name
-         return render_template('dashboard_user.html',name=name)
 
 
 
@@ -329,30 +343,35 @@ def edit_parking_spot(parking_lot_name,parking_spot_id):
 
 
 
-@main.route("/users",methods=["GET","POST"])
-@login_required
-def users():
+# @main.route("/users_dashboard",methods=["GET","POST"])
+# @login_required
+# def users():
 
-    if current_user.is_admin == "Yes":
+#     if current_user.is_admin == "Yes":
 
 
-        if request.method=="GET":
+#         if request.method=="GET":
             
 
-            user_data=User.query.all()
-            users={}
-            for user in user_data:
+#             user_data=User.query.all()
+#             users={}
+#             for user in user_data:
 
-                users[user]={
-                                "name": user.full_name,
-                                "address": user.address,
-                                "email": user.email,
-                                "pincode": user.pincode,
-                                "is_admin": user.is_admin
-
-
-                }
+#                 users[user]={
+#                                 "name": user.full_name,
+#                                 "address": user.address,
+#                                 "email": user.email,
+#                                 "pincode": user.pincode,
+#                                 "is_admin": user.is_admin
 
 
-            print(users)
-            return render_template("users.html",users=users)
+#                 }
+
+
+#             print(users)
+#             return render_template("dashboard_user.html",users=users)
+        
+
+
+
+

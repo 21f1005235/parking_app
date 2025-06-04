@@ -1,0 +1,217 @@
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f5fff7;
+    margin: 0;
+    padding: 0;
+    color: #222;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 18px 32px 10px 32px;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+}
+
+.system-title {
+    color: #00c389;
+    font-size: 1.6em;
+    font-weight: bold;
+    margin-right: 40px;
+    letter-spacing: 1px;
+}
+
+nav a {
+    text-decoration: none;
+    color: #222;
+    margin: 0 16px;
+    font-weight: 500;
+    padding-bottom: 5px;
+    border-bottom: 2px solid transparent;
+    transition: border 0.2s;
+}
+
+nav a.active,
+nav a:hover {
+    border-bottom: 2px solid #00c389;
+    color: #00c389;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+}
+
+.welcome-user {
+    margin-right: 18px;
+    color: #444;
+}
+
+.logout-btn {
+    background: #eee;
+    border: none;
+    border-radius: 6px;
+    padding: 7px 18px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.logout-btn:hover {
+    background: #f44336;
+    color: #fff;
+}
+
+.subnav {
+    background: #e9fff1;
+    padding: 12px 32px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.subnav a {
+    text-decoration: none;
+    color: #00c389;
+    font-weight: 500;
+}
+
+.subnav .welcome-link {
+    color: #009e6e;
+    font-weight: 500;
+    margin-right: 18px;
+}
+
+.edit-profile-btn {
+    margin-left: auto;
+    padding: 6px 18px;
+    border: 1px solid #00c389;
+    background: #fff;
+    color: #00c389;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background 0.2s, color 0.2s;
+}
+
+.edit-profile-btn:hover {
+    background: #00c389;
+    color: #fff;
+}
+
+main {
+    padding: 24px 32px;
+}
+
+section {
+    margin-bottom: 32px;
+}
+
+h2 {
+    color: #2867f0;
+    font-size: 1.3em;
+    margin-bottom: 18px;
+    font-weight: 600;
+    text-align: center;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    margin: 0 auto 16px auto;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+
+th, td {
+    padding: 12px 14px;
+    text-align: left;
+}
+
+th {
+    background: #f3fef8;
+    color: #00c389;
+    font-weight: 600;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+td {
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.action-btn {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 6px;
+    font-size: 0.98em;
+    font-weight: 500;
+}
+
+.action-btn.release {
+    background: #ffd6d6;
+    color: #d32f2f;
+    border: 1px solid #f8bcbc;
+}
+
+.action-btn.parked {
+    background: #d6ffe3;
+    color: #009e6e;
+    border: 1px solid #b8f8d1;
+}
+
+.search-section {
+    background: #f3fef8;
+    padding: 18px 24px;
+    border-radius: 8px;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.04em;
+}
+
+.search-section label {
+    color: #e53935;
+    font-weight: 500;
+}
+
+.search-section input[type="text"] {
+    padding: 7px 12px;
+    border: 1px solid #b8f8d1;
+    border-radius: 6px;
+    font-size: 1em;
+    outline: none;
+    min-width: 180px;
+}
+
+.book-btn {
+    background: #2867f0;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 7px 24px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.book-btn:hover {
+    background: #1746a2;
+}
+
+@media (max-width: 800px) {
+    header, .subnav, main {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    table, th, td {
+        font-size: 0.98em;
+    }
+}

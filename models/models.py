@@ -1,5 +1,6 @@
 from database import db 
 from flask_login import UserMixin
+from datetime import datetime
 
 class User(db.Model,UserMixin):
     __tablename__ = 'user'
@@ -47,19 +48,17 @@ class Booking(db.Model):
     # Relationships (optional, for convenience)
     spot = db.relationship('Parking_spot', backref='bookings')
     lot = db.relationship('Parking_lot', backref='bookings')
-    user = db.relationship('User', backref='bookings')
-
+    user = db.relationship('User', foreign_keys=[user_id], backref='bookings')
 
 class ReleaseHistory(db.Model):
-    __tablename__ = 'release_history'
+     __tablename__ = 'release_history'
 
-    release_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    spot_id = db.Column(db.Integer, db.ForeignKey('parking_spot.id'), nullable=False)
-    vehicle_number = db.Column(db.String(20),  db.ForeignKey('user.vehicle_number'), nullable=False)
-    lot_id = db.Column(db.Integer, db.ForeignKey('parking_lot.lot_id'), nullable=False)
-    released_by_user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    release_time = db.Column(db.Integer, default=datetime.utcnow)
+     release_id = db.Column(db.Integer, primary_key=True)
+     spot_id = db.Column(db.Integer, db.ForeignKey('parking_spot.id'), nullable=False)
+     lot_id = db.Column(db.Integer, db.ForeignKey('parking_lot.lot_id'), nullable=False)
+     vehicle_number = db.Column(db.String(20), nullable=False)
+     released_by_user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+     release_time = db.Column(db.DateTime, default=datetime.utcnow)
 
-    # Relationships (optional)
-    spot = db.relationship('Parking_spot', backref='release_history')
-    user = db.relationship('User', backref='released_spots')
+    # Resolve ambiguity
+     released_by_user = db.relationship('User', foreign_keys=[released_by_user_id], backref='release_history')
