@@ -3,10 +3,10 @@ from flask import render_template
 from flask_login import current_user
 from functools import wraps
 from flask import Blueprint, render_template, request
-from models.models import User,Parking_lot,Parking_spot
+from models.models import User,Parking_lot,Parking_spot,ParkingLotSearch
 from database import db
 from flask_login import login_user, logout_user, login_required
-
+from sqlalchemy import text
 
 
 
@@ -80,12 +80,94 @@ def user_dashboard(id):
                                 "address": user.address,
                                 "email": user.email,
                                 "pincode": user.pincode,
-                                "vehicle_number": user.vehicle_number
+                                "vehicle_number": user.vehicle_number,
+                                "id": user.id
+
+                }
+        
+        parking_locations=Parking_lot.query.all()
+        parking_data={}
+        for location in parking_locations:
+
+                available_spots=Parking_spot.query.filter_by(lot_id=location.lot_id,is_available="Yes").count()
+                parking_data[location.lot_id]={
+                                            'lot_name':location.lot_name,
+                                            'lot_address':location.lot_address,
+                                            'available_spots': available_spots
+                }
+
+
+        print(parking_data)
+
+        return render_template('dashboard_user.html',user_data=user_data, parking_data=parking_data)
+    
+
+    elif request.method=="POST":
+        
+            query=request.form.get('search_location')
+
+            print(query)
+
+            sql = text("""
+                        SELECT pl.*
+                        FROM parking_lot_search
+                        JOIN parking_lot pl ON parking_lot_search.rowid = pl.lot_id
+                        WHERE parking_lot_search MATCH :term
+                    """)
+            results = db.session.execute(sql, {'term': query}).fetchall()
+
+
+            print("Results",results)
+
+            location_ids=[]
+            for x in results:
+                location_ids.append(x[0])
+
+
+
+
+
+            user=User.query.filter(User.id==id).first()
+        
+         
+         
+        
+
+            user_data={
+                                "name": user.full_name,
+                                "address": user.address,
+                                "email": user.email,
+                                "pincode": user.pincode,
+                                "vehicle_number": user.vehicle_number,
+                                "id": user.id
+
+
 
 
                 }
+            
 
-        return render_template('dashboard_user.html',user_data=user_data)
+
+            parking_locations=Parking_lot.query.filter(Parking_lot.lot_id.in_(location_ids)).all()
+            parking_data={}
+            for location in parking_locations:
+
+                available_spots=Parking_spot.query.filter_by(lot_id=location.lot_id,is_available="Yes").count()
+                parking_data[location.lot_id]={
+                                            'lot_name':location.lot_name,
+                                            'lot_address':location.lot_address,
+                                            'available_spots': available_spots
+                }
+
+
+            print(parking_data)
+
+
+
+
+            return render_template('dashboard_user.html',user_data=user_data, parking_data=parking_data)
+
+
 
 @main.route('/logout')
 @login_required
@@ -98,7 +180,13 @@ def logout():
 
 
 
-@main.route("/admin/dashboard", methods=["GET"])
+
+
+
+
+
+
+@main.route('/admin_dashboard')
 @login_required
 def admin_dashboard():
     if current_user.is_admin == "Yes":
@@ -313,13 +401,34 @@ def register():
 def edit_parking_spot(parking_lot_name,parking_spot_id):
 
         if request.method=="GET":
+
+
+            lot = Parking_lot.query.filter_by(lot_name=parking_lot_name).first()
+            if lot is None:
                 
-            parking_lot_id=Parking_lot.query.filter_by(lot_name=parking_lot_name).first().lot_id
-            parking_lot_price=Parking_lot.query.filter_by(lot_name=parking_lot_name).first().lot_price_per_hour
-            parking_spot = Parking_spot.query.filter_by(lot_id=parking_lot_id,id=parking_spot_id).first()
-            availability = Parking_spot.query.filter_by(lot_id=parking_lot_id,id=parking_spot_id).first().is_available
-            print(parking_spot)
-            return render_template("parking_spot.html",parking_spot_id=parking_spot_id,parking_lot_name=parking_lot_name,parking_lot_price=parking_lot_price,success=True,availability=availability)
+                parking_lot_id=None
+                parking_lot_price=None
+                parking_spot = None
+                availability = None
+                print(parking_spot)
+                return render_template("parking_spot.html",parking_spot_id=parking_spot_id,parking_lot_name=parking_lot_name,parking_lot_price=parking_lot_price,success=True,availability=availability)
+            
+            else:
+
+                 
+                parking_lot_id=Parking_lot.query.filter_by(lot_name=parking_lot_name).first().lot_id
+                parking_lot_price=Parking_lot.query.filter_by(lot_name=parking_lot_name).first().lot_price_per_hour
+                parking_spot = Parking_spot.query.filter_by(lot_id=parking_lot_id,id=parking_spot_id).first()
+                availability = Parking_spot.query.filter_by(lot_id=parking_lot_id,id=parking_spot_id).first().is_available
+                print(parking_spot)
+                return render_template("parking_spot.html",parking_spot_id=parking_spot_id,parking_lot_name=parking_lot_name,parking_lot_price=parking_lot_price,success=True,availability=availability)
+            
+
+
+
+
+
+
         
 
         elif request.method=="POST":

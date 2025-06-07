@@ -34,31 +34,58 @@ class Parking_spot(db.Model):
     spot_number = db.Column(db.Integer, nullable=False)
     is_available = db.Column(db.String, default="Yes",nullable=False)
 
-class Booking(db.Model):
-    __tablename__ = 'bookings'
 
-    booking_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    spot_id = db.Column(db.Integer, db.ForeignKey('parking_spot.id'), nullable=False)
-    lot_id = db.Column(db.Integer, db.ForeignKey('parking_lot.lot_id'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    vehicle_number = db.Column(db.String(20),  db.ForeignKey('user.vehicle_number'), nullable=False)
-    start_time = db.Column(db.Integer, default=datetime.utcnow)
-    end_time = db.Column(db.DateTime)
 
-    # Relationships (optional, for convenience)
-    spot = db.relationship('Parking_spot', backref='bookings')
-    lot = db.relationship('Parking_lot', backref='bookings')
-    user = db.relationship('User', foreign_keys=[user_id], backref='bookings')
 
-class ReleaseHistory(db.Model):
-     __tablename__ = 'release_history'
+class ParkingLotSearch(db.Model):
+    __tablename__ = 'parking_lot_search'
+    __table_args__ = {'extend_existing': True}
 
-     release_id = db.Column(db.Integer, primary_key=True)
-     spot_id = db.Column(db.Integer, db.ForeignKey('parking_spot.id'), nullable=False)
-     lot_id = db.Column(db.Integer, db.ForeignKey('parking_lot.lot_id'), nullable=False)
-     vehicle_number = db.Column(db.String(20), nullable=False)
-     released_by_user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-     release_time = db.Column(db.DateTime, default=datetime.utcnow)
+    rowid = db.Column(db.Integer, primary_key=True)
+    lot_name = db.Column(db.Text)
+    lot_address = db.Column(db.Text)
 
-    # Resolve ambiguity
-     released_by_user = db.relationship('User', foreign_keys=[released_by_user_id], backref='release_history')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# class Booking(db.Model):
+#     __tablename__ = 'bookings'
+
+#     booking_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+#     spot_id = db.Column(db.Integer, db.ForeignKey('parking_spot.id'), nullable=False)
+#     lot_id = db.Column(db.Integer, db.ForeignKey('parking_lot.lot_id'), nullable=False)
+#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+#     vehicle_number = db.Column(db.String(20),  db.ForeignKey('user.vehicle_number'), nullable=False)
+#     start_time = db.Column(db.Integer, default=datetime.utcnow)
+#     end_time = db.Column(db.DateTime)
+
+#     # Relationships (optional, for convenience)
+#     spot = db.relationship('Parking_spot', backref='bookings')
+#     lot = db.relationship('Parking_lot', backref='bookings')
+#     user = db.relationship('User', foreign_keys=[user_id], backref='bookings')
+
+# class ReleaseHistory(db.Model):
+#      __tablename__ = 'release_history'
+
+#      release_id = db.Column(db.Integer, primary_key=True)
+#      spot_id = db.Column(db.Integer, db.ForeignKey('parking_spot.id'), nullable=False)
+#      lot_id = db.Column(db.Integer, db.ForeignKey('parking_lot.lot_id'), nullable=False)
+#      vehicle_number = db.Column(db.String(20), nullable=False)
+#      released_by_user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+#      release_time = db.Column(db.DateTime, default=datetime.utcnow)
+
+#     # Resolve ambiguity
+#      released_by_user = db.relationship('User', foreign_keys=[released_by_user_id], backref='release_history')

@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <title>Vehicle Parking System</title>
-    <link rel="stylesheet" href="../static/css/dashboard_user_style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard_user_style.css') }}">
 </head>
 <body>
     <header>
         <div class="header-left">
             <span class="system-title">Vehicle Parking System</span>
             <nav>
-                <a href="#" class="active">Home</a>
+                <a href="{{ url_for ('main.user_dashboard',id=user_data.id) }}" class="active">Home</a>
                 <a href="#">Summary</a>
                 
             </nav>
         </div>
         <div class="navbar-right">
-          <span class="welcome">Welcome, {{user_data.name}}</span>
+          <span class="welcome">Welcome, {{user_data.name[0]}}</span>
           <a href="{{ url_for('main.logout') }}" class="logout-btn">Logout</a>
     
         </div>
@@ -36,54 +36,72 @@
                     </tr>
                 </thead>
                 <tbody>
+
+                   
                     <tr>
-                        <td>120</td>
-                        <td>xxxxx</td>
-                        <td>TW318888</td>
-                        <td>xx-xx-xx</td>
+                        <td>Test</td>
+                        <td>Test</td>
+                        <td>Test</td>
+                        <td>Test</td>
+                        
                         <td><span class="action-btn release">Release</span></td>
                     </tr>
-                    <tr>
-                        <td>142</td>
-                        <td>xxxxx</td>
-                        <td>AP310921</td>
-                        <td>xx-xx-xx</td>
-                        <td><span class="action-btn parked">Parked Out</span></td>
-                    </tr>
+                 
                 </tbody>
             </table>
         </section>
         <section class="search-section">
+            <form action="{{ url_for('main.user_dashboard', id=user_data.id) }}" method="post">
             <label for="search">Search parking @location/pin code:</label>
-            <input type="text" id="search" value="Dadar Road">
+            <input type="text" id="search_location" name="search_location" placeholder="Search..." 
+            pattern="^[a-zA-Z0-9\s]+$"
+            title="Only letters, numbers, and spaces allowed.">
+            <button type="submit">Search</button>
+            </form>
         </section>
         <section class="lots-section">
-            <h2>Parking Lots @ Dadar Road</h2>
+            <h2>Parking Lots </h2>
+            
             <table>
                 <thead>
                     <tr>
                         <th>ID</th>
                         <th>Address</th>
                         <th>Availability</th>
+                        
+                        <th>Lot Address</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>132</td>
-                        <td>K. Gadgil Marg, xxxxx</td>
-                        <td>6</td>
-                        <td><button class="book-btn">Book</button></td>
-                    </tr>
-                    <tr>
-                        <td>136</td>
-                        <td>Wadala, xxxxx, xxxx</td>
-                        <td>10</td>
-                        <td><button class="book-btn">Book</button></td>
-                    </tr>
+                    {% if parking_data %}
+                            {% for lot_id, location in parking_data.items() %}
+                                <tr>
+                                    <td>{{ lot_id }}</td>
+                                    <td>{{ location.lot_name }}</td>
+                                    <td>{{ location.available_spots }}</td>
+                                    <td>{{ location.lot_address }}</td>
+                                    <td><button class="book-btn">Book</button></td>
+                                </tr>
+                            {% endfor %}
+                    {% else %}
+                        <tr><td colspan="4">No parking data available.</td></tr>
+                    {% endif %}
+                    
                 </tbody>
             </table>
         </section>
     </main>
 </body>
+<script>
+    function validateSearch() {
+      const input = document.getElementById("search_location").value;
+      const invalidChars = /[*"']/g;
+      if (invalidChars.test(input)) {
+        alert("Please avoid using *, \", or ' in your search.");
+        return false;
+      }
+      return true;
+    }
+  </script>
 </html>
