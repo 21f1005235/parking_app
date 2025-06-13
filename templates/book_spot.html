@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add New Parking Lot</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/book_spot_style.css') }}">
+</head>
+<body>
+  <div class="modal-bg">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+        
+          <div class="modal-subtitle">Book a parking spot</div>
+        </div> <a href="{{ url_for('main.user_dashboard',id=booking_spot_details.user_id) }}" class="modal-close" aria-label="Close">&times;</a>
+        
+      </div>
+      <div class="modal-tabs">
+        <button class="tab active">Details</button>
+        
+      </div>
+
+      <div class="model-form">
+      <form class="modal-form" action="{{ url_for('main.book_spot', parking_lot_id=booking_spot_details.parking_lot_id, user_id=booking_spot_details.user_id) }}" method="POST">
+
+        <div class="form-group">
+          <label for="lot_name">Parking Lot Name: {{ booking_spot_details.parking_lot_name }}</label>
+         
+        </div>
+        <div class="form-group">
+          <label for="lot_name">Parking Spot ID: {{ booking_spot_details.parking_spot_id }}</label>
+         
+        </div>
+        <div class="form-group">
+          <label for="user_id">User ID: {{ booking_spot_details.user_id }}</label>
+         
+        </div>
+        
+        <div class="form-group">
+            <label for="vehicle_number"> Vehicle Number</label>
+            <input type="text" pattern='[a-zA-Z0-9]*' id="vehicle_number" name="vehicle_number" title="Must be alphanumeric">
+        </div>
+        
+        
+        
+        <div class="modal-actions">
+          <a href="{{url_for('main.user_dashboard',id=booking_spot_details.user_id)}}" class='btn cancel'> Close </a>
+          <button type="submit" class="btn primary" name="book">Book</button>
+        </div>
+      </form>
+      </div>
+    </div>
+  </div>
+  
+</body>
+</html>

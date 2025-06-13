@@ -75,13 +75,16 @@
                 </thead>
                 <tbody>
                     {% if parking_data %}
+                    
                             {% for lot_id, location in parking_data.items() %}
                                 <tr>
                                     <td>{{ lot_id }}</td>
                                     <td>{{ location.lot_name }}</td>
                                     <td>{{ location.available_spots }}</td>
                                     <td>{{ location.lot_address }}</td>
-                                    <td><button class="book-btn">Book</button></td>
+                                    <td>
+                                        <button class="book-btn" onclick="window.location.href='{{ url_for('main.book_spot', user_id=user_data.id, parking_lot_id=lot_id) }}'">Book</button>
+                                    </td>                   
                                 </tr>
                             {% endfor %}
                     {% else %}
@@ -93,6 +96,15 @@
         </section>
     </main>
 </body>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert {{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
 <script>
     function validateSearch() {
       const input = document.getElementById("search_location").value;
@@ -103,5 +115,7 @@
       }
       return true;
     }
+
+ 
   </script>
 </html>

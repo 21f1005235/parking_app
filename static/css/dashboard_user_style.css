@@ -215,3 +215,16 @@ td {
         font-size: 0.98em;
     }
 }
+
+
+
+
+.alert {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
+.alert.warning {
+    background-color: #f8d7da;
+    color: #721c24;
+}

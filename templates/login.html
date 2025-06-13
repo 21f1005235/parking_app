@@ -68,12 +68,18 @@
       </div>
     </main>
   </div>
-  {% if success == False %}
+  {% if success == False and message==True%}
           <script>
-             alert("Enter correct password");
+             alert("Password is incorrect");
             window.location.href = "{{ url_for('main.login') }}";
           </script>
-        
+
+  {% elif success==False %}
+            <script>
+              alert("User not found");
+            window.location.href = "{{ url_for('main.login') }}";
+          </script>
+                  
   {% endif %}
 
 </body>
