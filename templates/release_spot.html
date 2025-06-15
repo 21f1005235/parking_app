@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Release Spot</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/release_spot_style.css') }}">
+</head>
+<body>
+  <div class="modal-bg">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+        
+          <div class="modal-subtitle">Release parking spot</div>
+        </div> <a href="{{ url_for('main.user_dashboard',id=release_spot_details.user_id) }}" class="modal-close" aria-label="Close">&times;</a>
+        
+      </div>
+      <div class="modal-tabs">
+        <button class="tab active">Details</button>
+        
+      </div>
+
+      <div class="model-form">
+      <form class="modal-form" action="{{ url_for('main.release_spot', user_id=release_spot_details.user_id, parking_lot_id=release_spot_details.parking_lot_id, spot_id=release_spot_details.spot_id ) }}" method="POST">
+
+        <div class="form-group">
+          <label for="lot_name">Parking Lot Name: {{ release_spot_details.lot_name }}</label>
+         
+        </div>
+        <div class="form-group">
+          <label for="lot_name">Parking Spot ID: {{ release_spot_details.spot_id }}</label>
+         
+        </div>
+        <div class="form-group">
+          <label for="user_id">User ID: {{ release_spot_details.user_id }}</label>
+         
+        </div>
+        
+        <div class="form-group">
+            <label for="vehicle_number"> Vehicle Number: {{ release_spot_details.vehicle_number }}</label>
+            
+        </div>
+        
+        <div class="form-group">
+          <label for="vehicle_number"> Vehicle Park Start Time: {{ release_spot_details.start_time }}</label>
+          
+      </div>
+      <div class="form-group">
+        <label for="vehicle_number"> Vehicle Parking Charges: ${{ release_spot_details.total_charges }}</label>
+        
+    </div>
+        
+        
+        <div class="modal-actions">
+          <a href="{{url_for('main.user_dashboard',id=release_spot_details.user_id)}}" class='btn cancel'> Close </a>
+          <button type="submit" class="btn primary" name="book">Release</button>
+        </div>
+      </form>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Refresh page every minute
+    setInterval(function() {
+        location.reload();
+    }, 60000);
+  </script>
+</body>
+</html>

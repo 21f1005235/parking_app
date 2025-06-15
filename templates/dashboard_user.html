@@ -2,25 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Vehicle Parking System</title>
+    <title>Vehicle Parking System- User Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard_user_style.css') }}">
 </head>
 <body>
-    <header>
-        <div class="header-left">
-            <span class="system-title">Vehicle Parking System</span>
-            <nav>
-                <a href="{{ url_for ('main.user_dashboard',id=user_data.id) }}" class="active">Home</a>
-                <a href="#">Summary</a>
+ 
+        <nav class="navbar">
+        <div class="navbar-left">
+            <span class="brand">Vehicle Parking System</span>
+            
+                <a href="{{ url_for ('main.user_dashboard',id=user_data.id) }}" class="nav-link active">Home</a>
+                <a href="#" class="nav-link">Summary</a>
                 
-            </nav>
+            
         </div>
         <div class="navbar-right">
           <span class="welcome">Welcome, {{user_data.name[0]}}</span>
           <a href="{{ url_for('main.logout') }}" class="logout-btn">Logout</a>
     
         </div>
-    </header>
+        </nav>
+
     
     <main>
         <section class="history-section">
@@ -28,26 +30,40 @@
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>location</th>
-                        <th>vehicle_no</th>
-                        <th>timestamp</th>
+                        <th>Booking ID</th>
+                        <th>Parking Lot name</th>
+                        <th> Lot charge</th>
+                        <th>Spot ID</th>
+                        <th>Vehicle Number</th>
+                        <th>Start Timestamp</th>
+                        <th>Total Charges</th>
                         <th>Action</th>
+                       
                     </tr>
                 </thead>
                 <tbody>
 
-                   
-                    <tr>
-                        <td>Test</td>
-                        <td>Test</td>
-                        <td>Test</td>
-                        <td>Test</td>
-                        
-                        <td><span class="action-btn release">Release</span></td>
-                    </tr>
-                 
+                   {% if booking_data %}
+                        {% for booking_id in booking_data %}
+                        <tr>
+                            <td>{{ booking_id }}</td>
+                            <td>{{ booking_data[booking_id].lot_name }}</td>
+                            <td>${{ booking_data[booking_id].lot_charge }} / hr</td>
+                            <td>{{ booking_data[booking_id].spot_id }}</td>
+                            <td>{{  booking_data[booking_id].vehicle_number }}</td>
+                            <td>{{  booking_data[booking_id].start_time }}</td>
+                            <td>${{ booking_data[booking_id].total_charges }}</td>
+
+                            {% if booking_data[booking_id].current_status=="active" %}
+                            <td><button class="book-btn" onclick="window.location.href='{{ url_for('main.release_spot', user_id=user_data.id, parking_lot_id=booking_data[booking_id].lot_id,spot_id=booking_data[booking_id].spot_id) }}'">Release</button></td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                    <tr><td colspan="4">No booking data available.</td></tr>
+                    {% endif %}
                 </tbody>
+
             </table>
         </section>
         <section class="search-section">
@@ -66,7 +82,7 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Address</th>
+                        <th>Parking Lot Name</th>
                         <th>Availability</th>
                         
                         <th>Lot Address</th>

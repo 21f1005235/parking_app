@@ -228,3 +228,45 @@ td {
     background-color: #f8d7da;
     color: #721c24;
 }
+
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+    padding: 18px 32px;
+    border-bottom: 1px solid #e7fbe6;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  }
+  
+  .navbar-left {
+    display: flex;
+    align-items: center;
+    gap: 26px;
+  }
+
+
+  .brand {
+    color: #1fbe6c;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-right: 22px;
+    letter-spacing: 0.5px;
+  }
+  .nav-link {
+    color: #222;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0 7px;
+    transition: color 0.2s;
+  }
+  .nav-link.active, .nav-link:hover {
+    color: #1fbe6c;
+  }
+  
+  .navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
