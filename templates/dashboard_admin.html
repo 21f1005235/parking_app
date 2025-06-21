@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <title>Vehicle Parking System - Admin Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="../static/css/dashboard_admin_style.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard_admin_style.css') }}">
 </head>
 <body>
   <nav class="navbar">
     <div class="navbar-left">
       <span class="brand">Vehicle Parking System</span>
-      <a href="#" class="nav-link active">Home</a>
-      <a href="#" class="nav-link">Users</a>
+      <a href="{{ url_for('main.admin_dashboard') }}" class="nav-link active">Home</a>
+      <a href="{{ url_for('main.admin_dashboard_users') }}" class="nav-link">Users</a>
       <a href="#" class="nav-link">Search</a>
       <a href="#" class="nav-link">Summary</a>
     </div>
@@ -68,8 +68,14 @@
         {% if parking_data %}
           {% for lot in parking_data %}
             <div class="lot-container">
-                  <a href="">Edit</a>
+
+
+                  <a href="{{ url_for('main.edit_parking_lot',parking_lot_id=parking_data[lot]['lot_id']) }}">Edit</a>
                   <a href="">Delete</a>
+
+
+
+
                   <div class="lot-title">{{ lot }}</div>
                   {% if parking_data[lot] %}
                     <div class="lot-spots">
@@ -111,28 +117,8 @@
     <div>
       <button class="add_parking_lot_btn" onclick="window.location.href='{{ url_for('main.addnewlot') }}'">Add Parking Lot</button>
     </div>
-    <div class="reservations-row">
-      <div class="reservations-title">Active Reservations</div>
-      <table class="reservations-table">
-        <thead>
-          <tr>
-            <th>USER</th>
-            <th>SPOT</th>
-            <th>VEHICLE</th>
-            <th>START TIME</th>
-            <th>DURATION</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Regular User</td>
-            <td>P2</td>
-            <td>ABC-1234</td>
-            <td>09:37:06</td>
-            <td>61 min</td>
-          </tr>
-        </tbody>
-      </table>
+   
+     
     </div>
   </main>
 </body>

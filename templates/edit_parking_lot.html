@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add New Parking Lot</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/edit_parking_lot_style.css') }}">
+</head>
+<body>
+  <div class="modal-bg">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">Edit parking lot</div>
+          <div class="modal-subtitle">Edit existing parking lots</div>
+        </div> <a href="{{url_for('main.admin_dashboard')}}" class="modal-close" aria-label="Close">&times;</a>
+        
+      </div>
+      <div class="modal-tabs">
+        <button class="tab active">Details</button>
+        
+      </div>
+      <form class="modal-form" action="{{ url_for('main.edit_parking_lot',parking_lot_id=lot_details.lot_id) }}" method="POST">
+
+        <div class="form-group">
+          <label for="lot_name">Parking Lot Name</label>
+          <input type="text" name="lot_name" id="lot_name" value="{{lot_details.lot_name}}" required>
+        </div>
+        <div class="form-group">
+          <label for="location">Address</label>
+          <input type="text" id="lot_address" name="lot_address" value="{{ lot_details.lot_address }}" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group half">
+            <label for="spots">Number of Spots</label>
+            <input type="number" id="lot_spot_count" name="lot_spot_count" value="{{ lot_details.lot_spot_count }}" min="1" required>
+          </div>
+          <div class="form-group half">
+            <label for="price">Price per Hour ($)</label>
+            <input type="number" class="short-input" id="lot_price_per_hour" name="lot_price_per_hour" value="{{ lot_details.lot_price_per_hour }}" min="0" step="0.01" required>
+          </div>
+        </div>
+        
+        <div class="modal-actions">
+          <a href="{{url_for('main.admin_dashboard')}}" class='btn cancel'> Cancel </a>
+          <button type="submit" class="btn primary">Update Parking Lot</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+
+<!-- Add this near the top of your template, inside the body -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="flash-messages">
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    <strong>{{ message }}</strong>
+                    <button type="button" class="close-btn" onclick="this.parentElement.style.display='none'">&times;</button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+
+
+</body>
+</html>

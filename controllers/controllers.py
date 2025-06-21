@@ -121,7 +121,8 @@ def admin_dashboard():
                                                 "occupied_count": occupied_count,
                                                 "total_count":total_count,
                                                 "lot_price_per_hour":lot_price_per_hour,
-                                                "spot_ids":spot_ids
+                                                "spot_ids":spot_ids,
+                                                "lot_id":lot_id
                                             }
                 else:
 
@@ -162,6 +163,38 @@ def admin_dashboard():
     else:
         
         return redirect(url_for("main.login"))
+
+
+
+
+
+@main.route('/admin/dashboard/users',methods=['GET'])
+@login_required
+@role_required('admin')
+def admin_dashboard_users():
+     
+
+
+    registered_users=User.query.all()
+    user_list_data={}
+    
+    if len(registered_users)>0:
+        for user in registered_users:
+            
+            if user.is_admin=='user':
+
+                user_list_data[user.id]={
+                                            "full_name":user.full_name,
+                                            "email":user.email,
+                                            "address":user.address,
+                                            "pincode":user.pincode,
+                                            "vehicle_number":user.vehicle_number
+
+                }
+            else:
+                 admin_name=user.full_name
+
+    return render_template('dashboard_admin_users.html',user_list_data=user_list_data,admin_name=admin_name)
 
 
 
@@ -333,6 +366,11 @@ def register():
             return render_template("registration.html", success=True)
 
 
+
+
+
+
+
 @main.route("/<parking_lot_name>/<parking_spot_id>",methods=["GET","POST"])
 @login_required
 @role_required('admin')
@@ -449,10 +487,75 @@ def book_spot(user_id,parking_lot_id):
 
 
 
+@main.route("/parking_lot/edit/<parking_lot_id>",methods=['GET','POST'])
+@role_required('admin')
+@login_required
+def edit_parking_lot(parking_lot_id):
+
+    try:
+        parking_lot = Parking_lot.query.filter_by(lot_id=parking_lot_id).first()
+        current_occupied_spot_count=Parking_spot.query.filter_by(lot_id=parking_lot_id,is_available="No").count()
+            
+        if not parking_lot:
+            flash("Parking lot not found.", "danger")
+            return redirect(url_for('main.admin_dashboard'))
+
+        if request.method == "GET":
+            lot_details = {
+                "lot_name": parking_lot.lot_name,
+                "lot_address": parking_lot.lot_address,
+                "lot_spot_count": parking_lot.lot_spot_count,
+                "lot_price_per_hour": parking_lot.lot_price_per_hour,
+                "lot_id":parking_lot.lot_id
+            }
+            return render_template('edit_parking_lot.html', lot_details=lot_details)
+
+        elif request.method == "POST":
+            # Get form data
+            new_lot_name = request.form.get("lot_name")
+            new_lot_address = request.form.get("lot_address")
+            new_lot_spot_count = int(request.form.get("lot_spot_count"))
+            new_lot_price_per_hour = request.form.get("lot_price_per_hour")
 
 
 
+            print("New_lot_name",new_lot_name)
+            print("New Spot Count",new_lot_spot_count)
+            print("New Spot price",new_lot_price_per_hour)
 
+
+            if new_lot_spot_count<current_occupied_spot_count:
+                  flash(f'Cannot reduce spot count to {new_lot_spot_count}. Currently {current_occupied_spot_count} spots are occupied.', 'warning')
+                  print(f"Debug: new_count={new_lot_spot_count}, occupied={current_occupied_spot_count}")  # Debug line
+                  return redirect(url_for('main.edit_parking_lot', parking_lot_id=parking_lot_id))
+            
+            # Optional: Type casting with error handling
+
+            try:
+                parking_lot.lot_spot_count = int(new_lot_spot_count)
+                parking_lot.lot_price_per_hour = float(new_lot_price_per_hour)
+
+
+            except ValueError:
+                flash("Invalid input for spot count or price per hour.", "danger")
+                return redirect(request.url)
+
+            # Update fields
+            parking_lot.lot_name = new_lot_name
+            parking_lot.lot_address = new_lot_address
+
+            db.session.commit()
+
+            #Function to create additional spots or deletion of spots
+            parking_lot_check(parking_lot_id=parking_lot_id)
+
+            flash("Parking lot details updated successfully.", "success")
+            return redirect(url_for('main.admin_dashboard'))
+
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error occurred: {e}", "danger")
+        return redirect(url_for('main.admin_dashboard'))
 
 
 
@@ -776,6 +879,158 @@ def calculate_charges(end_time,start_time,lot_charges):
         charges= ((end_time-start_time).total_seconds()/3600)*lot_charges
      
         return round(charges,2)
+
+
+
+def parking_lot_check(parking_lot_id):
+     
+    try: 
+            print("Calling here")
+            if not parking_lot_id:
+
+                flash('Invalid parking lot ID','error')
+                return redirect(url_for('main.admin_dashboard'))
+        
+
+
+           
+
+            parking_lot=Parking_lot.query.filter_by(lot_id=parking_lot_id).first()
+
+            if not parking_lot:
+                 flash("Parking lot not found",'errror')
+                 return redirect(url_for('main.admin_dashboard'))
+            
+
+
+            target_spot_count=Parking_lot.query.filter_by(lot_id=parking_lot_id).first().lot_spot_count
+
+            current_spot_count=Parking_spot.query.filter_by(lot_id=parking_lot_id).count()
+
+            if target_spot_count>current_spot_count:
+                 
+                
+                success = _add_parking_spots(parking_lot_id, target_spot_count, current_spot_count)
+                
+                
+                if success:
+                    flash(f'Added {target_spot_count - current_spot_count} parking spots', 'success')
+                else:
+                    flash('Error adding parking spots', 'error')
+
+            elif target_spot_count < current_spot_count:
+            # Remove excess spots
+                success = _remove_parking_spots(parking_lot_id, current_spot_count, target_spot_count)
+                if success:
+                    flash(f'Removed {current_spot_count - target_spot_count} parking spots', 'success')
+                else:
+                    flash('Error removing parking spots', 'error')
+            else:
+                    flash('Parking lot is already synchronized', 'info')
+        
+            return redirect(url_for('main.admin_dashboard'))
+    
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Database error: {str(e)}', 'error')
+        return redirect(url_for('main.admin_dashboard'))
+
+               
+              
+            
+            
+            
+
+
+
+
+def _add_parking_spots(parking_lot_id, target_count, current_count):
+    """Helper function to add parking spots"""
+    
+    print(f"DEBUG: Adding spots for lot_id={parking_lot_id}")
+    print(f"DEBUG: target_count={target_count}, current_count={current_count}")
+    try:
+        # Get the highest existing spot number
+        last_spot = Parking_spot.query.filter_by(lot_id=parking_lot_id)\
+                                     .order_by(Parking_spot.spot_number.desc())\
+                                     .first()
+        
+        next_spot_number = (last_spot.spot_number + 1) if last_spot else 1
+        spots_to_add = target_count - current_count
+        
+        # Bulk create spots
+        new_spots = []
+        for i in range(spots_to_add):
+            new_spot = Parking_spot(
+                lot_id=parking_lot_id,  # Fixed: use correct variable
+                spot_number=next_spot_number + i,  # Fixed: sequential numbering
+                is_available="Yes"  # Fixed: use boolean instead of string
+            )
+            new_spots.append(new_spot)
+        
+        # Bulk insert
+        db.session.add_all(new_spots)
+        db.session.commit()
+        return True
+        
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error adding spots: {e}")
+        return False
+
+
+def _remove_parking_spots(parking_lot_id, current_count, target_count):
+    """Helper function to remove parking spots"""
+    try:
+        spots_to_remove = current_count - target_count
+        
+        # Check for active bookings before removal
+        active_bookings = Bookings.query.filter_by(
+            lot_id=parking_lot_id, 
+            current_status='active'
+        ).count()
+        
+        if active_bookings > target_count:
+            raise ValueError(f"Cannot remove spots: {active_bookings} active bookings exceed target capacity")
+        
+        # Get spots to remove (highest numbered first)
+        spots_to_delete = Parking_spot.query.filter_by(lot_id=parking_lot_id)\
+                                           .filter(Parking_spot.is_available == "Yes")\
+                                           .order_by(Parking_spot.spot_number.desc())\
+                                           .limit(spots_to_remove)\
+                                           .all()
+        
+        if len(spots_to_delete) < spots_to_remove:
+            raise ValueError("Not enough available spots to remove")
+        
+        # Bulk delete
+        for spot in spots_to_delete:
+            db.session.delete(spot)
+        
+        db.session.commit()
+        return True
+        
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error removing spots: {e}")
+        return False
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
