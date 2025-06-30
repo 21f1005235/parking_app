@@ -71,7 +71,7 @@
 
 
                   <a href="{{ url_for('main.edit_parking_lot',parking_lot_id=parking_data[lot]['lot_id']) }}">Edit</a>
-                  <a href="">Delete</a>
+                  <a href="{{ url_for('main.delete_parking_lot',parking_lot_id=parking_data[lot]['lot_id']) }}">Delete</a>
 
 
 
@@ -121,5 +121,19 @@
      
     </div>
   </main>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="flash-messages">
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    <strong>{{ message }}</strong>
+                    <button type="button" class="close-btn" onclick="this.parentElement.style.display='none'">&times;</button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+
 </body>
 </html>

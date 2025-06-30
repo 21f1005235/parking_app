@@ -45,10 +45,7 @@
             <button type="submit" class="btn green" name="status">Available</button>
             {% else %}
             <label for="spots">Current Status:</label>
-            <a href="{{ url_for('main.parking_spot_details_occupied', parking_lot_name=parking_lot_name, parking_spot_id=parking_spot_id) }}" class="btn red">Occupied</a>
-            
-            
-            
+            <a href="https://example.com" class="btn red">Occupied</a>
             {% endif %}
 
 

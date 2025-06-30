@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add New Parking Lot</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/parking_spots_details_occupied_style.css') }}">
+</head>
+<body>
+  <div class="modal-bg">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title"> Parking Spot details</div>
+          <div class="modal-subtitle">Details of the Occupied parking spot</div>
+        </div> <a href="{{url_for('main.admin_dashboard')}}" class="modal-close" aria-label="Close">&times;</a>
+        
+      </div>
+      <div class="modal-tabs">
+        <button class="tab active">Details</button>
+        
+      </div>
+
+      <div class="model-form">
+      <form class="modal-form">
+
+        <div class="form-group">
+          <label for="lot_name">Parking Lot ID: {{ spot_details.parking_lot_id }}</label>
+         
+        </div>
+
+        <div class="form-group">
+          <label for="lot_name"> Customer Name: {{ spot_details.customer_id }}</label>
+         
+        </div>
+
+
+
+        <div class="form-group">
+          <label for="location">Vehicle Number : {{ spot_details.vehicle_number }}</label>
+          
+        </div>
+        <div class="form-group">
+          <label for="location">Date/Time of Parking: {{ spot_details.start_time }} </label>
+          
+        </div>
+        <div class="form-group">
+          <label for="location"> Estimated Parking Cost: ${{ spot_details.total_charges }}</label>
+          
+        </div>  
+
+
+
+        
+        <div class="modal-actions">
+          <a href="{{url_for('main.admin_dashboard')}}" class='btn cancel'> Close </a>
+          
+        </div>
+      </form>
+      </div>
+    </div>
+  </div>
+ 
+</body>
+</html>

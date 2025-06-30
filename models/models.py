@@ -24,6 +24,8 @@ class Parking_lot(db.Model):
     owner = db.relationship('User', backref=db.backref('parking_lots', passive_deletes=True))
     spots = db.relationship('Parking_spot', backref='lot', cascade="all, delete", passive_deletes=True)
 
+    bookings = db.relationship('Bookings', back_populates='lot', cascade="all, delete", passive_deletes=True)
+
 
 
 class Parking_spot(db.Model):
@@ -58,7 +60,7 @@ class Bookings(db.Model):
     current_status=db.Column(db.Text)
     # Relationships (optional, for convenience)
     spot = db.relationship('Parking_spot', backref='bookings')
-    lot = db.relationship('Parking_lot', backref='bookings')
+    lot = db.relationship('Parking_lot', back_populates='bookings')
     user = db.relationship('User', foreign_keys=[user_id], backref='bookings')
 
 class ReleaseHistory(db.Model):

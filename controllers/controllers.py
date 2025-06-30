@@ -140,16 +140,18 @@ def admin_dashboard():
                 if parking_data[lot]:
                     total = parking_data[lot]["total_count"]
                     occupied = parking_data[lot]["occupied_count"]
-                    rate = parking_data[lot]["lot_price_per_hour"]
-
+                    
                     summary["total_parking_spots"] += total
                     summary["occupied_spots"] += occupied
                     summary["available_spots"] += total - occupied
-                    summary["total_revenue"] += occupied * rate
+            
+            charges=ReleaseHistory.query.all()
+            total_sum=0
+            for record in charges:
+                 if record.charge_paid:
+                    total_sum=total_sum+record.charge_paid
 
-
-
-
+            summary["total_revenue"]=round(total_sum,2)
 
            
             return render_template("dashboard_admin.html", name=current_user.full_name,parking_data=parking_data,summary=summary)
@@ -231,7 +233,7 @@ def addnewlot():
             lot_location = request.form.get('lot_location')
             lot_spot_count =int( request.form.get('lot_spot_count'))
 
-            lot_price_per_hour = int(request.form.get('lot_price_per_hour'))
+            lot_price_per_hour = float(request.form.get('lot_price_per_hour'))
             existing = Parking_lot.query.filter_by(lot_name=lot_name).first()
             
 
@@ -368,6 +370,59 @@ def register():
 
 
 
+@main.route("/<parking_lot_name>/<parking_spot_id>/details",methods=["GET"])
+@login_required
+@role_required('admin')
+def parking_spot_details_occupied(parking_lot_name,parking_spot_id):
+
+    
+    if request.method=="GET":
+            
+            print(parking_lot_name,parking_spot_id)
+
+            lot = Parking_lot.query.filter_by(lot_name=parking_lot_name).first()
+        
+
+            
+            parking_lot_id=Parking_lot.query.filter_by(lot_name=parking_lot_name).first().lot_id
+            parking_spot = Parking_spot.query.filter_by(lot_id=parking_lot_id,id=parking_spot_id).first()
+
+            lot_charge = Parking_lot.query.filter_by(lot_id=parking_lot_id).first().lot_price_per_hour
+
+            booking_query=Bookings.query.filter_by(lot_id=parking_lot_id,spot_id=parking_spot_id,current_status='active').first()
+            customer_id= booking_query.user_id
+            vehicle_number=booking_query.vehicle_number
+            start_time=booking_query.start_time
+            
+                
+            if isinstance(start_time, str):
+                start_time = datetime.datetime.strptime(start_time, "%Y-%m-%d %H:%M:%S.%f")
+            
+            total_charges = calculate_charges(datetime.datetime.now(), start_time, lot_charge)
+            
+            
+
+
+            spot_details={
+                            'customer_id':customer_id,
+                            'vehicle_number':vehicle_number,
+                            'start_time':start_time,
+                            'total_charges':total_charges,
+                            'parking_lot_id':parking_lot_id,
+                            'parking_spot_id':parking_spot_id,
+                            'parking_lot_name':parking_lot_name,
+                            'spot_id':parking_spot_id,
+                            
+                        
+            }
+
+
+
+
+            
+            return render_template('parking_spot_details_occupied.html',spot_details=spot_details)
+
+                
 
 
 
@@ -396,7 +451,7 @@ def edit_parking_spot(parking_lot_name,parking_spot_id):
                 parking_lot_price=Parking_lot.query.filter_by(lot_name=parking_lot_name).first().lot_price_per_hour
                 parking_spot = Parking_spot.query.filter_by(lot_id=parking_lot_id,id=parking_spot_id).first()
                 availability = Parking_spot.query.filter_by(lot_id=parking_lot_id,id=parking_spot_id).first().is_available
-                print(parking_spot)
+               
                 return render_template("parking_spot.html",parking_spot_id=parking_spot_id,parking_lot_name=parking_lot_name,parking_lot_price=parking_lot_price,success=True,availability=availability)
             
 
@@ -483,6 +538,46 @@ def book_spot(user_id,parking_lot_id):
                      db.session.add(new_booking)
                      db.session.commit()
                 return redirect(url_for("main.user_dashboard",id=user_id))
+
+
+
+
+
+
+
+@main.route("/parking_lot/delete/<parking_lot_id>",methods=['GET'])
+@role_required('admin')
+@login_required
+def delete_parking_lot(parking_lot_id):
+     
+
+    try: 
+         
+         check_booking=Bookings.query.filter_by(lot_id=parking_lot_id,current_status='active').count()
+
+         if check_booking>0:
+              
+              flash('Cannot delete parking lot. Currently occupied','danger')
+              return redirect(url_for('main.admin_dashboard'))
+        
+         else:
+              
+            lot=Parking_lot.query.filter_by(lot_id=parking_lot_id).first()
+
+            if lot:
+                 db.session.delete(lot)
+                 db.session.commit()
+                 return redirect(url_for('main.admin_dashboard')) 
+
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error occurred: {e}", "danger")
+        return redirect(url_for('main.admin_dashboard'))
+                
+
+
+
+
 
 
 
@@ -728,6 +823,7 @@ def release_spot(user_id, parking_lot_id, spot_id):
 
 
 
+
 @main.route("/dashboard/user/<id>",methods=['GET','POST'])
 @role_required('user')
 @login_required
@@ -873,6 +969,10 @@ def user_dashboard(id):
             return render_template('dashboard_user.html',user_data=user_data, parking_data=parking_data,booking_data=booking_data)
 
 
+
+
+
+
 def calculate_charges(end_time,start_time,lot_charges):
      
 
@@ -935,8 +1035,7 @@ def parking_lot_check(parking_lot_id):
         flash(f'Database error: {str(e)}', 'error')
         return redirect(url_for('main.admin_dashboard'))
 
-               
-              
+     
             
             
             
