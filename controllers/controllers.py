@@ -1054,6 +1054,7 @@ def calculate_charges(end_time,start_time,lot_charges):
 
 #Comment to  for role based access
 #comment for milestone- VP admin dashboard management
+#Commnet Milestone-VP User-Dashboard-Management
 def parking_lot_check(parking_lot_id):
      
     try: 
