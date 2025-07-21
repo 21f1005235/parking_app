@@ -1052,7 +1052,7 @@ def calculate_charges(end_time,start_time,lot_charges):
      
         return round(charges,2)
 
-
+#Comment to  for role based access
 
 def parking_lot_check(parking_lot_id):
      
