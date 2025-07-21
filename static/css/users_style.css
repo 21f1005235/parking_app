@@ -43,24 +43,18 @@ body {
     align-items: center;
     gap: 20px;
   }
-  
-  .logout-btn {
-    background: #f2f2f2;
-    border: none;
-    border-radius: 6px;
-    padding: 8px 18px;
+  .welcome {
+    color: #222;
+    font-size: 1rem;
     font-weight: 500;
-    color: #444;
-    cursor: pointer;
-    transition: background 0.2s;
-    font-size: 1em;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
   }
   
-  .logout-btn:hover {
-    background: #e8e8e8;
-  }
-  
+
+
+
+
+
+
   main {
     padding: 32px 0 0 0;
     min-height: 100vh;
@@ -214,6 +208,25 @@ body {
     background: #09c77f;
     color: #fff;
   }
+
+
+  .logout-btn {
+    background: #f3fdf5;
+    border: 1px solid #d5eedd;
+    border-radius: 7px;
+    padding: 6px 18px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, border 0.2s;
+  }
+  .logout-btn:hover {
+    background: #e7fbe6;
+    border-color: #1fbe6c;
+    color: #1fbe6c;
+  }
+
+
   
   @media (max-width: 900px) {
     .manage-users-section {

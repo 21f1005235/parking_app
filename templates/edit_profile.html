@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Profile</title>
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/edit_profile_style.css') }}">
+</head>
+<body>
+  <div class="edit-profile-container">
+    <form class="edit-profile-form" method="POST" action="{{ url_for('main.update_profile', user_id=user_data.id) }}">
+      <h2>Edit Profile</h2>
+      <p class="subtitle">Update your personal information and contact details.</p>
+      
+      <label for="full_name">Full Name</label>
+      <input type="text" id="full_name" name="full_name" value="{{ user_data.full_name}}" required>
+      
+      <label for="email">Email Address</label>
+      <input type="email" id="email" name="email" value="{{ user_data.email }}" disabled>
+      <span class="email-note">Email address cannot be changed</span>
+      
+      <label for="address">Address</label>
+      <input type="text" id="address" name="address" value="{{ user_data.address }}" required>
+      
+      <label for="pincode">Pin Code</label>
+      <input type="text" id="pincode" name="pincode" value="{{ user_data.pincode }}" required>
+
+      <label for="vehicle_number">Vehicle Number</label>
+      <input type="text" id="vehicle_number" name="vehicle_number" value="{{ user_data.vehicle_number }}" required>
+      
+      <div class="button-group">
+        <button type="submit" class="save-btn">Save Changes</button>
+        <<button type="button" class="cancel-btn"
+        onclick="window.location.href='{{ url_for('main.admin_dashboard') if user_data['is_admin'] == 'Yes' else url_for('main.user_dashboard', id=user_data['id']) }}'">
+    Cancel
+</button>
+
+
+      </div>
+    </form>
+  </div>
+</body>
+</html>

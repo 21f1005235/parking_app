@@ -93,7 +93,8 @@ def logout():
 def admin_dashboard():
     if current_user.is_admin == "Yes":
 
-    
+
+        print("Current user Id",current_user.id)
         parking_lot_list=[lot.lot_name for lot in Parking_lot.query.with_entities(Parking_lot.lot_name).all()]
         print("Parking LOt List", parking_lot_list)
         
@@ -154,13 +155,13 @@ def admin_dashboard():
             summary["total_revenue"]=round(total_sum,2)
 
            
-            return render_template("dashboard_admin.html", name=current_user.full_name,parking_data=parking_data,summary=summary)
+            return render_template("dashboard_admin.html", name=current_user.full_name,parking_data=parking_data,summary=summary,id=current_user.id)
                 
                     
 
 
         else:
-            return render_template("dashboard_admin.html",name=current_user.full_name,parking_data={})
+            return render_template("dashboard_admin.html",name=current_user.full_name,parking_data={},summary={},id=current_user.id)
         
     else:
         
@@ -196,7 +197,7 @@ def admin_dashboard_users():
             else:
                  admin_name=user.full_name
 
-    return render_template('dashboard_admin_users.html',user_list_data=user_list_data,admin_name=admin_name)
+    return render_template('dashboard_admin_users.html',user_list_data=user_list_data,admin_name=admin_name,name=current_user.full_name,id=current_user.id)
 
 
 
@@ -882,7 +883,7 @@ def user_dashboard(id):
 
         print(parking_data)
 
-        return render_template('dashboard_user.html',user_data=user_data, parking_data=parking_data,booking_data=booking_data)
+        return render_template('dashboard_user.html',user_data=user_data, parking_data=parking_data,booking_data=booking_data,id=current_user.id,name=current_user.full_name)
     
 
     elif request.method=="POST":
@@ -966,7 +967,78 @@ def user_dashboard(id):
                                                         "total_charges": calculate_charges(datetime.datetime.now(),start_time,lot_charge)
                                                     }
 
-            return render_template('dashboard_user.html',user_data=user_data, parking_data=parking_data,booking_data=booking_data)
+            return render_template('dashboard_user.html',user_data=user_data, parking_data=parking_data,booking_data=booking_data, id=current_user.id,name=current_user.full_name)
+
+
+
+
+@main.route("/admin/dashboard/search", methods=["GET", "POST"])
+@login_required
+@role_required('admin')
+def search_admin():
+    if request.method == 'POST':
+        search_by = request.form.get('search_by')
+        search_string = request.form.get('search_string')
+
+        print("Search by:", search_by)
+        print("Search string:", search_string)
+
+        parking_data = {}
+        sr_parking_lot_id = []
+
+        if search_by == "user_id":
+            booking_results = Bookings.query.filter_by(user_id=int(search_string), current_status="active").all()
+            print("Booking results:", booking_results)
+            sr_parking_lot_id = [booking.lot_id for booking in booking_results]
+
+        elif search_by == "location":
+            results = Parking_lot.query.filter(Parking_lot.lot_address.ilike(f"%{search_string}%")).all()
+            print("Booking results for user:", results)
+            sr_parking_lot_id = [lot.lot_id for lot in results]
+
+        elif search_by == "user_name":
+            user = User.query.filter(User.full_name.ilike(f"%{search_string}%")).first()
+            print("Matching users:", user)
+            if user:
+                results = Bookings.query.filter_by(user_id=user.id, current_status="active").all()
+                print("Booking results for user name:", results)
+                sr_parking_lot_id = [booking.lot_id for booking in results]
+            else:
+                sr_parking_lot_id = []
+
+        elif search_by == "vehicle_number":
+            search_string = search_string.upper().strip()
+            results = Bookings.query.filter_by(vehicle_number=search_string, current_status="active").all()
+            print("Booking results for vehicle_number:", results)
+            sr_parking_lot_id = [booking.lot_id for booking in results]
+
+        for lot_id in set(sr_parking_lot_id):  # avoid duplicates
+            lot = Parking_lot.query.filter_by(lot_id=lot_id).first()
+            if lot:
+                lot_name = lot.lot_name
+                occupied_spots = [spot.id for spot in Parking_spot.query.filter_by(lot_id=lot_id, is_available="No").all()]
+                occupied_count = len(occupied_spots)
+                total_count = Parking_spot.query.filter_by(lot_id=lot_id).count()
+                spot_ids = [spot.id for spot in Parking_spot.query.filter_by(lot_id=lot_id).all()]
+                parking_data[lot_name] = {
+                    "occupied_spots": occupied_spots,
+                    "occupied_count": occupied_count,
+                    "total_count": total_count,
+                    "lot_price_per_hour": lot.lot_price_per_hour,
+                    "spot_ids": spot_ids,
+                    "lot_id": lot_id
+                }
+        print("sr_parking_lot_id:", sr_parking_lot_id)
+        print(parking_data)
+        return render_template("search_admin.html", parking_data=parking_data, search_string=search_string,search_by=search_by,name=current_user.full_name,id=current_user.id)
+
+    return render_template("search_admin.html",parking_data={}, search_string="", search_by="", name=current_user.full_name,id=current_user.id)
+
+
+
+
+
+
 
 
 
@@ -1125,8 +1197,58 @@ def _remove_parking_spots(parking_lot_id, current_count, target_count):
 
 
 
+# Edit profile and update profile
+    
+@main.route('/edit-profile/<int:user_id>', methods=['GET'])
+@login_required
+def edit_profile(user_id):
+    user = User.query.filter_by(id=user_id).first()
+    is_admin= user.is_admin 
+    user_data= {
+                    "id": user_id,
+                    "email": user.email,
+                    "full_name": user.full_name,
+                    "address": user.address,
+                    "pincode": user.pincode,
+                    "vehicle_number": user.vehicle_number,
+                    "is_admin": is_admin
+    }
+
+    if not user:
+        return "User not found", 404
+    return render_template('edit_profile.html', user_data=user_data)
 
 
+@main.route('/edit-profile/<int:user_id>', methods=['POST'])
+@login_required
+def update_profile(user_id):
+    full_name = request.form.get('full_name')
+    address= request.form.get('address')
+    pincode = request.form.get('pincode')
+    vehicle_number = request.form.get('vehicle_number')
+    
+    print ("Full_name",full_name)
+    print ("Address",address)
+    print("Pincode",pincode)
+    print("Vehicle_number",vehicle_number)
+    # Update the DB
+    query= User.query.filter_by(id=user_id).first()
+    if not query:
+        flash("User not found.", "danger")
+        return redirect(url_for('main.login'))
+    query.full_name = full_name
+    query.address = address
+    query.pincode = pincode
+    query.vehicle_number = vehicle_number  # Keep existing if not provided
+    db.session.commit()
+
+
+    if current_user.is_admin == "Yes":
+        flash("Profile updated successfully.", "success")
+        return redirect (url_for('main.admin_dashboard'))
+    else:
+         flash("Profile updated successfully.", "success")
+         return redirect( url_for('main.user_dashboard', id=user_id))
 
 
 

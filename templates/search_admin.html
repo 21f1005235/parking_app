@@ -1,0 +1,159 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vehicle Parking System - Manage Users</title>
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/search_admin.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-left">
+          <span class="brand">Vehicle Parking System</span>
+          <a href="{{ url_for('main.admin_dashboard') }}" class="nav-link">Home</a>
+          <a href="{{ url_for('main.admin_dashboard_users') }}" class="nav-link">Users</a>
+          <a href="{{ url_for('main.search_admin') }}" class="nav-link active" >Search</a>
+          <a href="#" class="nav-link">Summary</a>
+        </div>
+        <div class="navbar-right">
+          <a href="{{ url_for('main.edit_profile',user_id=id )}}" class="welcome" title="Click to edit profile">Welcome, {{ name }}</a>
+
+          <a href="{{ url_for('main.logout') }}" class="logout-btn">Logout</a>
+    
+        </div>
+      </nav>
+  <main class="main-content">
+    <section class="manage-users-section">
+      <h2>Search Parking Spots</h2>
+      <div class="search-container">
+       
+      </div>
+      <div class="users-table-container">
+        <form method="POST" action="{{ url_for('main.search_admin') }}" class="form-inline">
+          <label for="search_by">Search by:</label>
+          <select name="search_by" id="search_by" onchange="adjustInputField()">
+
+            <option value="user_id" {{ 'selected' if search_by == 'user_id' else '' }}>User ID</option>
+            <option value="location" {{ 'selected' if search_by == 'location' else '' }}>Location</option>
+            <option value="user_name" {{ 'selected' if search_by == 'user_name' else '' }}>User Name</option>
+            <option value="vehicle_number" {{ 'selected' if search_by == 'vehicle_number' else '' }}>Vehicle Number</option>
+          </select>
+        
+          <input name="search_string" id="search_string" placeholder="Search..." required value="{{ search_string }}">
+
+
+          <button type="submit">Search</button>
+        </form>
+
+
+
+
+      </div>
+      <div>
+        <h3>Search Results for "{{ search_string }}"</h3>
+      </div>
+    </section>
+    <section>
+    
+    <div class="summary-card">
+      {% if parking_data %}
+      {% for lot in parking_data %}
+        <div class="lot-container">
+
+
+             
+
+
+
+              <div class="lot-title">{{ lot }}</div>
+              <a href="{{ url_for('main.edit_parking_lot',parking_lot_id=parking_data[lot]['lot_id']) }}">Edit</a>
+              <a href="{{ url_for('main.delete_parking_lot',parking_lot_id=parking_data[lot]['lot_id']) }}">Delete</a>
+
+            
+              {% if parking_data[lot] %}
+                <div class="lot-spots">
+                  {% for x in parking_data[lot]['spot_ids'] %}
+                    
+                    {% if x in parking_data[lot]["occupied_spots"] %}
+                      <div class="spot red"><a href="/{{ lot }}/{{ x }}" style="text-decoration: none;">P{{ x }}</a></div>
+                    
+                    {% else %}
+                      <div class="spot green"><a href="/{{ lot }}/{{ x }}" style="text-decoration: none;">P{{ x }}</a></div>
+                    
+                    {% endif %}
+                  
+                  {% endfor %}
+                </div>
+                
+                <div class="lot-legend">
+                  <span class="legend-dot green"></span> Available
+                  <span class="legend-dot red" style="margin-left:18px;"></span> Occupied
+                </div>
+                
+                <div class="lot-status">
+                  {{ parking_data[lot]["occupied_count"] }}/{{ parking_data[lot]["total_count"] }} spots occupied
+                </div>
+              {% endif %}    
+        </div>
+        
+
+          
+      {% endfor %}
+    {% else %}
+      <div> <p> No parking data found</p></div>
+    {% endif %} 
+      </div>
+
+   
+
+
+
+
+
+
+
+    </section>
+  </main>
+
+
+  <script>
+    function adjustInputField() {
+      const searchBy = document.getElementById('search_by').value;
+      const searchInput = document.getElementById('search_string');
+  
+      if (!searchInput) return;
+  
+      // Clear only the type and constraints — not the value!
+      searchInput.removeAttribute('pattern');
+      searchInput.removeAttribute('title');
+      searchInput.removeAttribute('min');
+      searchInput.type = 'text';
+  
+      switch (searchBy) {
+        case 'user_id':
+          searchInput.type = 'number';
+          searchInput.min = '1';
+          searchInput.title = 'Please enter a valid integer User ID.';
+          break;
+  
+        case 'location':
+        case 'user_name':
+          searchInput.pattern = '[a-zA-Z ]+';
+          searchInput.title = 'Only alphabets and spaces allowed.';
+          break;
+  
+        case 'vehicle_number':
+          searchInput.pattern = '[A-Za-z0-9-]+';
+          searchInput.title = 'Only alphanumeric characters and hyphens allowed.';
+          break;
+      }
+    }
+  
+    // Delay this until the DOM is ready
+    window.onload = function () {
+      adjustInputField();
+    };
+  </script>
+  
+</body>
+</html>

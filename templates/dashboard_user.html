@@ -17,7 +17,8 @@
             
         </div>
         <div class="navbar-right">
-          <span class="welcome">Welcome, {{user_data.name[0]}}</span>
+            <a href="{{ url_for('main.edit_profile',user_id=id )}}" class="welcome" title="Click to edit profile">Welcome, {{ name }}</a>
+
           <a href="{{ url_for('main.logout') }}" class="logout-btn">Logout</a>
     
         </div>

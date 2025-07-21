@@ -270,8 +270,11 @@ td {
     align-items: center;
     gap: 20px;
   }
-
-
+  .welcome {
+    color: #222;
+    font-size: 1rem;
+    font-weight: 500;
+  }
 
   .stylish-table {
     width: 85%;

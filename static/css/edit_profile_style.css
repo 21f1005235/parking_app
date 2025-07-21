@@ -1,0 +1,106 @@
+body {
+    background: #f8fafc;
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  }
+  
+  .edit-profile-container {
+    margin: 40px auto;
+    max-width: 500px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 36px 32px 28px 32px;
+    box-shadow: 0 2px 12px rgba(60,72,88,0.07);
+    border: 1px solid #f2f4f7;
+  }
+  
+  .edit-profile-form h2 {
+    margin-top: 0;
+    margin-bottom: 4px;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #18181b;
+  }
+  
+  .edit-profile-form .subtitle {
+    margin-top: 0;
+    margin-bottom: 26px;
+    color: #475467;
+    font-size: 1rem;
+  }
+  
+  .edit-profile-form label {
+    display: block;
+    margin-top: 18px;
+    margin-bottom: 7px;
+    font-size: 1rem;
+    color: #222;
+    font-weight: 500;
+  }
+  
+  .edit-profile-form input[type="text"],
+  .edit-profile-form input[type="email"] {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    border: 1px solid #E2E8F0;
+    border-radius: 7px;
+    background: #f9fafb;
+    color: #333;
+    margin-bottom: 0px;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  
+  .edit-profile-form input[type="email"]:disabled {
+    background: #f2f4f7;
+    color: #888;
+  }
+  
+  .email-note {
+    display: block;
+    font-size: 0.95rem;
+    margin-top: 6px;
+    color: #98A2B3;
+    margin-bottom: 3px;
+  }
+  
+  .button-group {
+    margin-top: 36px;
+    display: flex;
+    gap: 18px;
+  }
+  
+  .save-btn {
+    background: #099250;
+    color: #fff;
+    border: none;
+    padding: 13px 32px;
+    border-radius: 7px;
+    font-size: 1.08rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  
+  .save-btn:hover {
+    background: #06703b;
+  }
+  
+  .cancel-btn {
+    background: #f9fafb;
+    color: #444;
+    border: 1px solid #e5e7eb;
+    padding: 13px 32px;
+    border-radius: 7px;
+    font-size: 1.08rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.1s, border 0.1s;
+  }
+  
+  .cancel-btn:hover {
+    background: #f2f4f7;
+    border-color: #cbd5e1;
+  }
+  

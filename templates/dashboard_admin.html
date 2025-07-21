@@ -12,11 +12,12 @@
       <span class="brand">Vehicle Parking System</span>
       <a href="{{ url_for('main.admin_dashboard') }}" class="nav-link active">Home</a>
       <a href="{{ url_for('main.admin_dashboard_users') }}" class="nav-link">Users</a>
-      <a href="#" class="nav-link">Search</a>
+      <a href="{{ url_for('main.search_admin') }}" class="nav-link">Search</a>
       <a href="#" class="nav-link">Summary</a>
     </div>
     <div class="navbar-right">
-      <span class="welcome">Welcome, {{name}}</span>
+      <a href="{{ url_for('main.edit_profile',user_id=id )}}" class="welcome" title="Click to edit profile">Welcome, {{ name }}</a>
+
       <a href="{{ url_for('main.logout') }}" class="logout-btn">Logout</a>
 
     </div>
