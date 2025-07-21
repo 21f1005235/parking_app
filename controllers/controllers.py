@@ -1053,7 +1053,7 @@ def calculate_charges(end_time,start_time,lot_charges):
         return round(charges,2)
 
 #Comment to  for role based access
-
+#comment for milestone- VP admin dashboard management
 def parking_lot_check(parking_lot_id):
      
     try: 
