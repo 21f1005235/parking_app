@@ -581,7 +581,7 @@ def delete_parking_lot(parking_lot_id):
 
 
 #Milestone-VP- Cost Calculation
-
+# Milestone-VP Search-Implemented
 
 
 
