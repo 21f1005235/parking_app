@@ -29,7 +29,7 @@
       
       <div class="button-group">
         <button type="submit" class="save-btn">Save Changes</button>
-        <<button type="button" class="cancel-btn"
+        <button type="button" class="cancel-btn"
         onclick="window.location.href='{{ url_for('main.admin_dashboard') if user_data['is_admin'] == 'Yes' else url_for('main.user_dashboard', id=user_data['id']) }}'">
     Cancel
 </button>

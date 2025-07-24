@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vehicle Parking System - Admin Summary</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/summary_style.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .chart-container {
+      width: 90%;
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 20px;
+      border: 1px solid #ddd;
+      background-color: #f8f8f8;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    canvas {
+      width: auto !important;
+      height: auto !important;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-left">
+      <span class="brand">Vehicle Parking System</span>
+      <a href="{{ url_for('main.admin_dashboard') }}" class="nav-link">Home</a>
+      <a href="{{ url_for('main.admin_dashboard_users') }}" class="nav-link">Users</a>
+      <a href="{{ url_for('main.search_admin') }}" class="nav-link">Search</a>
+      <a href="{{ url_for('main.admin_summary') }}" class="nav-link active">Summary</a>
+    </div>
+    <div class="navbar-right">
+      <a href="{{ url_for('main.edit_profile', user_id=id) }}" class="welcome" title="Click to edit profile">Welcome, {{ name }}</a>
+      <a href="{{ url_for('main.logout') }}" class="logout-btn">Logout</a>
+    </div>
+  </nav>
+
+  <main>
+    <section class="Charts">
+
+      <div class="chart-container">
+        <h2>Weekly Revenue (₹)</h2>
+        <canvas id="weeklyRevenueChart"></canvas>
+      </div>
+
+      <div class="chart-container">
+        <h2>Occupancy Trend (Daily Active Bookings)</h2>
+        <canvas id="occupancyTrendChart"></canvas>
+      </div>
+
+      <div class="chart-container">
+        <h2>Current Occupancy (Pie Chart)</h2>
+        <canvas id="occupancyPieChart"></canvas>
+      </div>
+
+      <div class="chart-container">
+        <h2>Top 5 Users by Bookings</h2>
+        <canvas id="topUsersChart"></canvas>
+      </div>
+
+    </section>
+  </main>
+
+  <script>
+    // Weekly Revenue Chart
+    const weeklyRevenueCtx = document.getElementById('weeklyRevenueChart').getContext('2d');
+    new Chart(weeklyRevenueCtx, {
+      type: 'line',
+      data: {
+        labels: {{ weekly_revenue | map(attribute='date') | list | tojson }},
+        datasets: [{
+          label: 'Revenue (₹)',
+          data: {{ weekly_revenue | map(attribute='revenue') | list | tojson }},
+          borderColor: 'blue',
+          backgroundColor: 'lightblue',
+          fill: true
+        }]
+      }
+    });
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    // Occupancy Trend Chart
+    const occupancyTrendCtx = document.getElementById('occupancyTrendChart').getContext('2d');
+    new Chart(occupancyTrendCtx, {
+      type: 'bar',
+      data: {
+        labels: {{ occupancy_trend | map(attribute='date') | list | tojson }},
+        datasets: [{
+          label: 'Active Bookings',
+          data: {{ occupancy_trend | map(attribute='active') | list | tojson }},
+          backgroundColor: 'orange'
+        }]
+      }
+    });
+
+    // Pie Chart
+    const pieCtx = document.getElementById('occupancyPieChart').getContext('2d');
+    new Chart(pieCtx, {
+      type: 'pie',
+      data: {
+        labels: ['Occupied', 'Available'],
+        datasets: [{
+          data: [{{ occupancy_pie.occupied }}, {{ occupancy_pie.available }}],
+          backgroundColor: ['red', 'green']
+        }]
+      }
+    });
+
+    // Top Users Chart
+    const topUsersCtx = document.getElementById('topUsersChart').getContext('2d');
+    new Chart(topUsersCtx, {
+      type: 'bar',
+      data: {
+        labels: {{ top_users | map(attribute=0) | list | tojson }},
+        datasets: [{
+          label: 'Bookings',
+          data: {{ top_users | map(attribute=1) | list | tojson }},
+          backgroundColor: 'purple'
+        }]
+      }
+    });
+  </script>
+</body>
+</html>

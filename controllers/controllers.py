@@ -8,7 +8,10 @@ from database import db
 from flask_login import login_user, logout_user, login_required
 from sqlalchemy import text
 from flask import sessions
-import datetime
+
+from collections import defaultdict
+from datetime import datetime, timedelta
+
 
 main = Blueprint('main', __name__)
 
@@ -397,9 +400,9 @@ def parking_spot_details_occupied(parking_lot_name,parking_spot_id):
             
                 
             if isinstance(start_time, str):
-                start_time = datetime.datetime.strptime(start_time, "%Y-%m-%d %H:%M:%S.%f")
+                start_time = datetime.strptime(start_time, "%Y-%m-%d %H:%M:%S.%f")
             
-            total_charges = calculate_charges(datetime.datetime.now(), start_time, lot_charge)
+            total_charges = calculate_charges(datetime.now(), start_time, lot_charge)
             
             
 
@@ -533,7 +536,7 @@ def book_spot(user_id,parking_lot_id):
                                                 lot_id=parking_lot_id,
                                                 user_id=user_id,
                                                 vehicle_number=vehicle_number,
-                                                start_time=datetime.datetime.now(),
+                                                start_time=datetime.now(),
                                                 current_status="active"
                      )
                      db.session.add(new_booking)
@@ -761,11 +764,11 @@ def release_spot(user_id, parking_lot_id, spot_id):
 
         start_time = booking.start_time
         if isinstance(start_time, str):
-            start_time = datetime.datetime.strptime(start_time, "%Y-%m-%d %H:%M:%S.%f")
+            start_time = datetime.strptime(start_time, "%Y-%m-%d %H:%M:%S.%f")
         lot_charge = parking_lot.lot_price_per_hour
 
         if request.method == "GET":
-            total_charges = calculate_charges(datetime.datetime.now(), start_time, lot_charge)
+            total_charges = calculate_charges(datetime.now(), start_time, lot_charge)
             release_spot_details = {
                 "user_id": user_id,
                 "parking_lot_id": parking_lot_id,
@@ -778,7 +781,7 @@ def release_spot(user_id, parking_lot_id, spot_id):
             return render_template("release_spot.html", release_spot_details=release_spot_details)
 
         elif request.method == "POST":
-            release_time = datetime.datetime.now()
+            release_time = datetime.now()
             charges = calculate_charges(release_time, start_time, lot_charge)
             print("Charges",charges)
             # Add to ReleaseHistory
@@ -855,7 +858,7 @@ def user_dashboard(id):
              start_time=booking.start_time
              
              if isinstance(start_time, str):
-                start_time = datetime.datetime.strptime(start_time, "%Y-%m-%d %H:%M:%S.%f")
+                start_time = datetime.strptime(start_time, "%Y-%m-%d %H:%M:%S.%f")
              booking_data[booking.booking_id]={
                                                     "spot_id": booking.spot_id,
                                                     "lot_id":  booking.lot_id,
@@ -865,7 +868,7 @@ def user_dashboard(id):
                                                     "current_status":booking.current_status,
                                                     "lot_name":lot_name,
                                                     "lot_charge":lot_charge,
-                                                    "total_charges": calculate_charges(datetime.datetime.now(),start_time,lot_charge)
+                                                    "total_charges": calculate_charges(datetime.now(),start_time,lot_charge)
                                                  }
              
         print("booking_data",booking_data)
@@ -877,7 +880,8 @@ def user_dashboard(id):
                 parking_data[location.lot_id]={
                                             'lot_name':location.lot_name,
                                             'lot_address':location.lot_address,
-                                            'available_spots': available_spots
+                                            'available_spots': available_spots,
+                                            'lot_charge': location.lot_price_per_hour
                 }
 
 
@@ -940,10 +944,11 @@ def user_dashboard(id):
                 parking_data[location.lot_id]={
                                             'lot_name':location.lot_name,
                                             'lot_address':location.lot_address,
-                                            'available_spots': available_spots
+                                            'available_spots': available_spots,
+                                            'lot_charge': location.lot_price_per_hour
                 }
 
-
+            print("Parking Data Check",parking_data)
             
 
             bookings_by_user=Bookings.query.filter_by(user_id=id,current_status='active').all()
@@ -954,7 +959,7 @@ def user_dashboard(id):
                 lot_name=Parking_lot.query.filter_by(lot_id=booking.lot_id).first().lot_name
                 start_time = booking.start_time
                 if isinstance(start_time, str):
-                    start_time = datetime.datetime.strptime(start_time, "%Y-%m-%d %H:%M:%S.%f")
+                    start_time = datetime.strptime(start_time, "%Y-%m-%d %H:%M:%S.%f")
                 booking_data[booking.booking_id]={
                                                         "spot_id": booking.spot_id,
                                                         "lot_id":  booking.lot_id,
@@ -964,7 +969,7 @@ def user_dashboard(id):
                                                         "current_status":booking.current_status,
                                                         "lot_name":lot_name,
                                                         "lot_charge":lot_charge,
-                                                        "total_charges": calculate_charges(datetime.datetime.now(),start_time,lot_charge)
+                                                        "total_charges": calculate_charges(datetime.now(),start_time,lot_charge)
                                                     }
 
             return render_template('dashboard_user.html',user_data=user_data, parking_data=parking_data,booking_data=booking_data, id=current_user.id,name=current_user.full_name)
@@ -1254,38 +1259,106 @@ def update_profile(user_id):
 
 
 
+def parse_datetime(dt_str):
+    try:
+        return datetime.strptime(dt_str, "%Y-%m-%d %H:%M:%S.%f")
+    except ValueError:
+        return datetime.strptime(dt_str, "%Y-%m-%d %H:%M:%S")
+
+
+@main.route('/admin/summary', methods=['GET'])
+@login_required
+@role_required('admin')
+def admin_summary():
+    
 
 
 
-# @main.route("/users_dashboard",methods=["GET","POST"])
-# @login_required
-# def users():
-
-#     if current_user.is_admin == "Yes":
+    # --- Weekly Revenue (filtered by parking lot) ---
+   
 
 
-#         if request.method=="GET":
-            
-
-#             user_data=User.query.all()
-#             users={}
-#             for user in user_data:
-
-#                 users[user]={
-#                                 "name": user.full_name,
-#                                 "address": user.address,
-#                                 "email": user.email,
-#                                 "pincode": user.pincode,
-#                                 "is_admin": user.is_admin
 
 
-#                 }
+    earliest_record = ReleaseHistory.query.order_by(ReleaseHistory.release_time.asc()).first()
+    weekly_revenue = []
+
+    if earliest_record and earliest_record.release_time:
+        today = datetime.today().date()
+
+        release_dt = parse_datetime(earliest_record.release_time)
+        start_date = release_dt.date()
+        start_of_week = start_date - timedelta(days=start_date.weekday())
+
+        revenue_data = defaultdict(float)
+
+        records = ReleaseHistory.query.filter(ReleaseHistory.release_time >= start_of_week).all()
+        for rec in records:
+            if rec.release_time:
+                release_dt = parse_datetime(rec.release_time)
+                week_start = release_dt.date() - timedelta(days=release_dt.weekday())
+                revenue_data[week_start] += rec.charge_paid or 0
+
+        all_weeks = sorted(revenue_data.keys(), reverse=True)[:10]
+        weekly_revenue = [
+            {
+                "date": week.strftime("%Y-%m-%d"),
+                "revenue": round(revenue_data[week], 2)
+            } for week in reversed(all_weeks)
+        ]
+
+    print("Weekly Revenue Data:", weekly_revenue)
 
 
-#             print(users)
-#             return render_template("dashboard_user.html",users=users)
+
+
+
+    # --- Occupancy trend ---
+    booking_data = defaultdict(int)
+    bookings = Bookings.query.filter(Bookings.start_time >= week_start).all()
+
+    for b in bookings:
         
+        # Convert start_time to datetime if it's a string
+
+        start_time = b.start_time
+        if isinstance(start_time, str):
+                    start_time = datetime.strptime(start_time, "%Y-%m-%d %H:%M:%S.%f")
+
+                    
+        booking_data[start_time.date()] += 1
 
 
+    occupancy_trend = [{"date": d.strftime("%Y-%m-%d"), "active": booking_data[d]} for d in sorted(booking_data)]
+
+    # --- Pie Chart: Total occupancy ---
+    total_spots = Parking_spot.query.count()
+    occupied = Parking_spot.query.filter_by(is_available="No").count()
+    available = total_spots - occupied
+
+    # --- Top Users ---
+    top_users = db.session.query(User.full_name, db.func.count(Bookings.booking_id).label("booking_count"))\
+                .join(Bookings, Bookings.user_id == User.id)\
+                .group_by(User.full_name).order_by(db.desc("booking_count")).limit(5).all()
+
+    return render_template(
+        'admin_summary.html',
+        name=current_user.full_name,
+        weekly_revenue=weekly_revenue,
+        occupancy_trend=occupancy_trend,
+        occupancy_pie={"occupied": occupied, "available": available},
+        top_users=top_users,
+        id= current_user.id
+    )
+
+
+
+
+@main.route('/usersummary/<int:user_id>', methods=['GET'])
+@login_required
+@role_required('admin')
+def user_summary(user_id):
+
+    pass
 
 
