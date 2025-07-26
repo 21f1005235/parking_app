@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vehicle Parking System - User Summary</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/user_summary_style.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+
+  <style>
+    .chart-container {
+      width: 90%;
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 20px;
+      border: 1px solid #ddd;
+      background-color: #f8f8f8;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    canvas {
+      width: auto !important;
+      height: auto !important;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-left">
+        <span class="brand">Vehicle Parking System</span>
+        <a href="{{ url_for('main.user_dashboard', id=id) }}" class="nav-link ">Home</a>
+        <a href="{{ url_for('main.user_summary', user_id=id) }}" class="nav-link active">Summary</a>
+    </div>
+    <div class="navbar-right">
+        <a href="{{ url_for('main.edit_profile', user_id=id) }}" class="welcome" title="Click to edit profile">Welcome, {{ name }}</a>
+        <a href="{{ url_for('main.logout') }}" class="logout-btn">Logout</a>
+    </div>
+  </nav>
+
+  <main>
+    <section class="Charts">
+
+      <div class="chart-container">
+        <h2>Weekly Bookings</h2>
+        <canvas id="userBookingsChart"></canvas>
+      </div>
+
+     
+      <div class="chart-container">
+        <h2>User Duration</h2>
+        <canvas id="userDurationChart"></canvas>
+      </div>
+
+    </section>
+  </main>
+
+  <script>
+    const labels = {{ (user_weekly_data | default([])) | map(attribute='week') | list | tojson }};
+    const bookings = {{ (user_weekly_data | default([])) | map(attribute='count') | list | tojson }};
+    
+    const durations = {{ (user_weekly_data | default([])) | map(attribute='duration') | list | tojson }};
+
+    // Bookings Chart
+    new Chart(document.getElementById('userBookingsChart').getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Weekly Bookings',
+          data: bookings,
+          backgroundColor: 'skyblue'
+        }]
+      }
+    });
+
+    
+
+    // Time Parked Chart
+    new Chart(document.getElementById('userDurationChart').getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Time Parked (hrs)',
+          data: durations,
+          backgroundColor: 'orange'
+        }]
+      }
+    });
+  </script>
+
+</body>
+</html>

@@ -5,6 +5,7 @@
   <title>Vehicle Parking System - Admin Summary</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/summary_style.css') }}">
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
@@ -74,21 +75,57 @@
   <script>
     // Weekly Revenue Chart
     const weeklyRevenueCtx = document.getElementById('weeklyRevenueChart').getContext('2d');
-    new Chart(weeklyRevenueCtx, {
-      type: 'line',
-      data: {
-        labels: {{ weekly_revenue | map(attribute='date') | list | tojson }},
-        datasets: [{
-          label: 'Revenue (₹)',
-          data: {{ weekly_revenue | map(attribute='revenue') | list | tojson }},
-          borderColor: 'blue',
-          backgroundColor: 'lightblue',
-          fill: true
-        }]
+new Chart(weeklyRevenueCtx, {
+  type: 'line',
+  data: {
+    labels: {{ weekly_revenue | map(attribute='date') | list | tojson }},
+    datasets: [{
+      label: 'Revenue ($)',
+      data: {{ weekly_revenue | map(attribute='revenue') | list | tojson }},
+      borderColor: 'blue',
+      backgroundColor: 'lightblue',
+      fill: true
+    }]
+  },
+  options: {
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: 'Week Starting Date',
+          font: {
+            size: 14,
+            weight: 'bold'
+          },
+          color: '#333'
+        }
+      },
+      y: {
+        title: {
+          display: true,
+          text: 'Revenue ($)',
+          font: {
+            size: 14,
+            weight: 'bold'
+          },
+          color: '#333'
+        },
+        beginAtZero: true
       }
-    });
+    },
+    plugins: {
+      legend: {
+        labels: {
+          font: {
+            size: 14,
+            weight: 'bold'
+          }
+        }
+      }
+    }
+  }
+});
 
-    
 
 
 

@@ -1289,6 +1289,7 @@ def admin_summary():
         release_dt = parse_datetime(earliest_record.release_time)
         start_date = release_dt.date()
         start_of_week = start_date - timedelta(days=start_date.weekday())
+        end_of_week = today - timedelta(days=today.weekday())
 
         revenue_data = defaultdict(float)
 
@@ -1299,37 +1300,90 @@ def admin_summary():
                 week_start = release_dt.date() - timedelta(days=release_dt.weekday())
                 revenue_data[week_start] += rec.charge_paid or 0
 
-        all_weeks = sorted(revenue_data.keys(), reverse=True)[:10]
-        weekly_revenue = [
-            {
+    #     all_weeks = sorted(revenue_data.keys(), reverse=True)[:10]
+    #     weekly_revenue = [
+    #         {
+    #             "date": week.strftime("%Y-%m-%d"),
+    #             "revenue": round(revenue_data[week], 2)
+    #         } for week in reversed(all_weeks)
+    #     ]
+        week = start_of_week 
+        weekly_revenue = []
+        while (week <= end_of_week):
+            weekly_revenue.append({
                 "date": week.strftime("%Y-%m-%d"),
                 "revenue": round(revenue_data[week], 2)
-            } for week in reversed(all_weeks)
-        ]
-
+            })
+            week += timedelta(days=7)
     print("Weekly Revenue Data:", weekly_revenue)
+        
 
 
 
 
 
     # --- Occupancy trend ---
-    booking_data = defaultdict(int)
-    bookings = Bookings.query.filter(Bookings.start_time >= week_start).all()
+    # booking_data = defaultdict(int)
+    # bookings = Bookings.query.filter(Bookings.start_time >= week_start).all()
 
-    for b in bookings:
+    # for b in bookings:
         
-        # Convert start_time to datetime if it's a string
+    #     # Convert start_time to datetime if it's a string
 
-        start_time = b.start_time
-        if isinstance(start_time, str):
-                    start_time = datetime.strptime(start_time, "%Y-%m-%d %H:%M:%S.%f")
+    #     start_time = b.start_time
+    #     if isinstance(start_time, str):
+    #                 start_time = datetime.strptime(start_time, "%Y-%m-%d %H:%M:%S.%f")
 
                     
-        booking_data[start_time.date()] += 1
+    #     booking_data[start_time.date()] += 1
 
 
-    occupancy_trend = [{"date": d.strftime("%Y-%m-%d"), "active": booking_data[d]} for d in sorted(booking_data)]
+    # occupancy_trend = [{"date": d.strftime("%Y-%m-%d"), "active": booking_data[d]} for d in sorted(booking_data)]
+    today = datetime.today().date()
+    start_date = today - timedelta(days=9)  # Last 10 days including today
+    date_range = [start_date + timedelta(days=i) for i in range(10)]
+
+    booking_data = defaultdict(int)
+    for d in date_range:
+        booking_data[d] = 0
+
+    # Query bookings with start_time in the date range (>= start_date and <= today)
+    bookings = Bookings.query.filter(
+        Bookings.start_time >= datetime.combine(start_date, datetime.min.time()),
+        Bookings.start_time <= datetime.combine(today, datetime.max.time())
+    ).all()
+
+    for b in bookings:
+        start_time = b.start_time
+        if isinstance(start_time, str):
+            try:
+                start_time = datetime.strptime(start_time, "%Y-%m-%d %H:%M:%S.%f")
+            except ValueError:
+                start_time = datetime.strptime(start_time, "%Y-%m-%d %H:%M:%S")
+        booking_date = start_time.date()
+        if booking_date in booking_data:
+            booking_data[booking_date] += 1
+
+    # Prepare occupancy trend for last 10 days
+    occupancy_trend = [
+        {"date": d.strftime("%Y-%m-%d"), "active": booking_data[d]}
+        for d in date_range
+    ]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     # --- Pie Chart: Total occupancy ---
     total_spots = Parking_spot.query.count()
@@ -1356,9 +1410,64 @@ def admin_summary():
 
 @main.route('/usersummary/<int:user_id>', methods=['GET'])
 @login_required
-@role_required('admin')
+@role_required('user')
 def user_summary(user_id):
 
-    pass
+    
 
+    releases = ReleaseHistory.query.filter_by(released_by_user_id=user_id).all()
+
+    weekly_usage = defaultdict(lambda: {'duration': 0.0, 'count': 0})
+
+    for release in releases:
+        # Find the corresponding booking record
+        booking = Bookings.query.filter_by(
+            user_id=release.released_by_user_id,
+            lot_id=release.lot_id,
+            spot_id=release.spot_id
+        ).order_by(Bookings.start_time.desc()).first()
+
+        if not booking or not booking.start_time or not release.release_time:
+            continue  # Skip if data is incomplete
+
+        # Convert strings to datetime if needed
+        start_time = booking.start_time
+        release_time = release.release_time
+
+        if isinstance(start_time, str):
+            try:
+                start_time = datetime.strptime(start_time, "%Y-%m-%d %H:%M:%S.%f")
+            except ValueError:
+                start_time = datetime.strptime(start_time, "%Y-%m-%d %H:%M:%S")
+
+        if isinstance(release_time, str):
+            try:
+                release_time = datetime.strptime(release_time, "%Y-%m-%d %H:%M:%S.%f")
+            except ValueError:
+                release_time = datetime.strptime(release_time, "%Y-%m-%d %H:%M:%S")
+
+        # Calculate duration in hours
+        duration_seconds = (release_time - start_time).total_seconds()
+        duration_hours = round(duration_seconds / 3600, 2)
+
+        # Calculate week start date
+        week_start = release_time.date() - timedelta(days=release_time.weekday())
+
+        # Update the dictionary
+        weekly_usage[week_start]['duration'] += duration_hours
+        weekly_usage[week_start]['count'] += 1
+
+    # Sort and limit to last 10 weeks
+    sorted_weeks = sorted(weekly_usage.keys(), reverse=True)[:10]
+    user_weekly_data = [
+        {
+            "week": week.strftime("%Y-%m-%d"),
+            "duration": abs(round(weekly_usage[week]['duration'], 2)),
+            "count": weekly_usage[week]['count']
+        }
+        for week in reversed(sorted_weeks)
+    ]
+    
+    print("User Weekly Data:", user_weekly_data)
+    return render_template("user_summary.html", user_weekly_data=user_weekly_data, name=current_user.full_name,id= current_user.id)
 
