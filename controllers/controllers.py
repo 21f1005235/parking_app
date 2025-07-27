@@ -976,7 +976,7 @@ def user_dashboard(id):
 
 
 #Milestone-VP Responsive-UI
-
+#Milestone-VP Flask-Integration
 @main.route("/admin/dashboard/search", methods=["GET", "POST"])
 @login_required
 @role_required('admin')
