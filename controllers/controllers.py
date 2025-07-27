@@ -1,4 +1,4 @@
-from flask import Flask, request,flash,redirect, url_for
+from flask import Flask, request,flash,redirect, url_for,jsonify
 from flask import render_template
 from flask_login import current_user
 from functools import wraps
@@ -1471,3 +1471,40 @@ def user_summary(user_id):
     print("User Weekly Data:", user_weekly_data)
     return render_template("user_summary.html", user_weekly_data=user_weekly_data, name=current_user.full_name,id= current_user.id)
 
+
+
+@main.route('/api/users', methods=['POST'])
+def add_user_api():
+    data = request.get_json()
+    
+    required_fields = ['full_name', 'email', 'password','address','pincode', 'vehicle_number']
+    if not all(field in data for field in required_fields):
+        return jsonify({'error': 'Missing required fields'}), 400
+
+    # Check if user already exists
+    if User.query.filter_by(email=data['email']).first():
+        return jsonify({'error': 'User already exists'}), 409
+
+   
+    if data['pincode'] and not data['pincode'].isdigit():
+        return jsonify({'error': 'Pincode must be numeric'}), 400
+    
+
+    if data['email'] and '@' not in data['email']:
+        return jsonify({'error': 'Invalid email format'}), 400
+    
+
+
+    new_user = User(
+        full_name=data['full_name'],
+        email=data['email'],
+        password=data['password'],  # Assuming password is hashed before sending
+        address=data['address'],
+        pincode=data['pincode'],
+        vehicle_number=data['vehicle_number'],
+
+    )
+    db.session.add(new_user)
+    db.session.commit()
+
+    return jsonify({'message': 'User created successfully', 'user_id': new_user.id}), 201
