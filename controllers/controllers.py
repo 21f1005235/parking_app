@@ -975,7 +975,7 @@ def user_dashboard(id):
             return render_template('dashboard_user.html',user_data=user_data, parking_data=parking_data,booking_data=booking_data, id=current_user.id,name=current_user.full_name)
 
 
-
+#Milestone-VP Responsive-UI
 
 @main.route("/admin/dashboard/search", methods=["GET", "POST"])
 @login_required
