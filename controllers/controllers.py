@@ -1508,3 +1508,7 @@ def add_user_api():
     db.session.commit()
 
     return jsonify({'message': 'User created successfully', 'user_id': new_user.id}), 201
+
+#     curl -X POST http://localhost:5000/api/users \
+# -H "Content-Type: application/json" \
+# -d '{"full_name":"John Doe", "email":"john@example.com", "password":"secret123"}'
